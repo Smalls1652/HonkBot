@@ -2,6 +2,8 @@ using System.Text.RegularExpressions;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
+using Discord.Net.Rest;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +56,8 @@ public class DiscordService : IDiscordService
         _commandService.Log += HandleLog;
         _discordClient.InteractionCreated += HandleSlashCommand;
         _discordClient.Ready += OnClientReady;
+        _discordClient.GuildUpdated += HandleGuildUpdate;
+
     }
 
     private async Task OnClientReady()
@@ -116,5 +120,23 @@ public class DiscordService : IDiscordService
     {
         SocketInteractionContext interactionContext = new(_discordClient, interaction);
         await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+    }
+
+    private async Task HandleGuildUpdate(SocketGuild guild1, SocketGuild guild2)
+    {
+        foreach (GuildEmote emote in guild2.Emotes)
+        {
+            if (!guild1.Emotes.Contains(emote))
+            {
+                await guild2.SystemChannel.SendMessageAsync(
+                    text: $"New emote added! {emote}",
+                    embed: new EmbedBuilder()
+                    {
+                        ImageUrl = emote.Url
+                    }
+                    .Build()
+                );
+            }
+        }
     }
 }
