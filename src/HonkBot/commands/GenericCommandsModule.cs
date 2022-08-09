@@ -106,7 +106,7 @@ public class GenericCommandsModule : InteractionModuleBase
                 MemoryStream emoteImgResizedStream = new(emoteImgResizedByteArray);
 
                 _logger.LogInformation("Sending resized emote.");
-                await RespondWithFileAsync(
+                await FollowupWithFileAsync(
                     fileName: $"{parsedEmote.Name}.{emoteImgInfo.Format.ToString().ToLower()}",
                     fileStream: emoteImgResizedStream
                 );
@@ -124,7 +124,7 @@ public class GenericCommandsModule : InteractionModuleBase
                 message: "Error message: {Message}",
                 args: e.Message
             );
-            await RespondAsync(
+            await FollowupAsync(
                 embed: new EmbedBuilder()
                 {
                     ImageUrl = Emote.Parse(emote).Url
