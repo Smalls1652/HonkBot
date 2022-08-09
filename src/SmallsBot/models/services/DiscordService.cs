@@ -51,7 +51,7 @@ public class DiscordService : IDiscordService
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
 
         _discordClient.Log += HandleLog;
-        _discordClient.MessageReceived += HandleMessageCommand;
+        //_discordClient.MessageReceived += HandleMessageCommand;
         _interactionService.Log += HandleLog;
         _commandService.Log += HandleLog;
         _discordClient.InteractionCreated += HandleSlashCommand;
