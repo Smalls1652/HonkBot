@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+name: Build
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup dotnet SDK
+        uses: actions/setup-dotnet@v1.9.0
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Run 'dotnet restore'
+        run: dotnet restore ./src/HonkBot/
+
+      - name: Run 'dotnet build'
+        run: dotnet build ./src/HonkBot/
