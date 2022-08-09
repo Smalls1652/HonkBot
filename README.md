@@ -2,4 +2,5 @@
 
 A very stupid Discord bot I'm using in a private Discord server.
 
-<div style="font-size: 5px;">pls don't use this</div>
+<sub><sub><sub>pls don't use this</sub></sub></sub>
+
