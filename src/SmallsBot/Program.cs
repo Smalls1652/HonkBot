@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SmallsBot.Commands;
 using SmallsBot.Models.Services;
 
 namespace SmallsBot;
@@ -19,6 +20,7 @@ public class Program
             .ConfigureServices(
                 (_, services) =>
                 {
+                    services.AddSingleton<DiscordSocketClient>();
                     services.AddSingleton<IDiscordService, DiscordService>();
                 }
             )
@@ -56,7 +58,8 @@ public class Program
 
         using IHost host = hostBuilder.Build();
 
-        await host.Services.GetRequiredService<IDiscordService>().Connect();
+        IDiscordService discordSvc = host.Services.GetRequiredService<IDiscordService>();
+        await discordSvc.Connect();
 
         await host.RunAsync();
     }
