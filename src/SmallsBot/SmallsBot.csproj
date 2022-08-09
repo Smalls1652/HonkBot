@@ -28,7 +28,7 @@
     <Content Include="honk-gon-get-ya.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="appsettings.Development.json">
+    <Content Condition="'$(Configuration)'=='Debug'" Include="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
