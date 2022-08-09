@@ -18,7 +18,10 @@ public class HonkCommandModule : InteractionModuleBase
 
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "honk-gm", description: "honk says gm to a user")]
-    public async Task HandleHonkGmSlashCommand(IUser user)
+    public async Task HandleHonkGmSlashCommand(
+        [Summary(description: "The user to have HonkBot say gm to.")]
+        IUser user
+    )
     {
         _logger.LogInformation("'{Username}' called the 'honk-gm' command.", Context.User.Username);
         await RespondWithFileAsync(
@@ -30,7 +33,10 @@ public class HonkCommandModule : InteractionModuleBase
 
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "honk-angry", description:"honk mad")]
-    public async Task HandleHonkAngryResponseCommand(string message)
+    public async Task HandleHonkAngryResponseCommand(
+        [Summary(description: "A message for HonkBot to angrily send.")]
+        string message
+    )
     {
         _logger.LogInformation("'{Username}' called the 'honk-angry' command.", Context.User.Username);
         await RespondWithFileAsync(

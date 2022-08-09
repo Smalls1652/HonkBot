@@ -15,8 +15,11 @@ public class GenericCommandsModule : InteractionModuleBase
     }
 
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    [SlashCommand(name: "hugemoji", description: "Make an emoji honking huge.")]
-    private async Task HandleHonkingHugemoji(string emote)
+    [SlashCommand(name: "hugemoji", description: "Make an emote honking huge.")]
+    private async Task HandleHonkingHugemoji(
+        [Summary(description: "The emote to make honking huge.")]
+        string emote
+    )
     {
         Emote? parsedEmote;
         try
