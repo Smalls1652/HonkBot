@@ -3,9 +3,9 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using SmallsBot.Models.Services;
+using HonkBot.Models.Services;
 
-namespace SmallsBot.Commands;
+namespace HonkBot.Commands;
 
 public class HonkCommandModule : InteractionModuleBase
 {

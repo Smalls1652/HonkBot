@@ -5,9 +5,9 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SmallsBot.Commands;
+using HonkBot.Commands;
 
-namespace SmallsBot.Models.Services;
+namespace HonkBot.Models.Services;
 
 public class DiscordService : IDiscordService
 {

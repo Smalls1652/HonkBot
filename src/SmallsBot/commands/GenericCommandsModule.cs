@@ -3,7 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
-namespace SmallsBot.Commands;
+namespace HonkBot.Commands;
 
 public class GenericCommandsModule : InteractionModuleBase
 {

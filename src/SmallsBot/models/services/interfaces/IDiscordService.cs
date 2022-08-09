@@ -1,6 +1,6 @@
 using Discord.WebSocket;
 
-namespace SmallsBot.Models.Services;
+namespace HonkBot.Models.Services;
 
 public interface IDiscordService
 {
