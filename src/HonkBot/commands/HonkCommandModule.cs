@@ -1,17 +1,18 @@
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Extensions.Logging;
 using HonkBot.Models.Services;
+using Microsoft.Extensions.Logging;
 
 namespace HonkBot.Commands;
 
 public class HonkCommandModule : InteractionModuleBase
 {
+    private readonly IDiscordService _discordService;
     private readonly ILogger<HonkCommandModule> _logger;
-    public HonkCommandModule(ILogger<HonkCommandModule> logger)
+    public HonkCommandModule(IDiscordService discordService, ILogger<HonkCommandModule> logger)
     {
+        _discordService = discordService;
         _logger = logger;
     }
 
@@ -33,6 +34,24 @@ public class HonkCommandModule : InteractionModuleBase
         await RespondWithFileAsync(
             text: message,
             filePath: "honk-gon-get-ya.png"
+        );
+    }
+
+    [DefaultMemberPermissions(GuildPermission.Administrator)]
+    [SlashCommand("reset-honk-status", "Reset honk's status")]
+    public async Task HandleResetHonkStatus(
+        [Summary(description: "The status you want to set for HonkBot.")]
+        string status = "honking away",
+        [Summary(description: "The type of activity you want to show."), Choice("Playing", 0), Choice("Streaming", 1), Choice("Listening", 2), Choice("Watching", 3), Choice("Competing", 5)]
+        int activityType = 0
+    )
+    {
+        ActivityType activityTypeConverted = (ActivityType)activityType;
+        await _discordService.SetGameStatus(status, activityTypeConverted);
+
+        await RespondAsync(
+            text: "Updated HonkBot's status.",
+            ephemeral: true
         );
     }
 }
