@@ -3,9 +3,9 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using HonkBot.Commands;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using HonkBot.Commands;
 
 namespace HonkBot.Models.Services;
 
@@ -73,6 +73,22 @@ public class DiscordService : IDiscordService
 
         string messageCommandsLoaded = string.Join(",", _commandService!.Commands.ToList());
         _logger.LogInformation("Mention commands loaded: {commandsLoadedString}", messageCommandsLoaded);
+
+        await SetGameStatus(null, ActivityType.Playing);
+    }
+
+    public async Task SetGameStatus(string? status, ActivityType activityType = ActivityType.Playing)
+    {
+        if (status is null)
+        {
+            status = "honking away";
+        }
+
+        await _discordClient.SetGameAsync(
+            name: status,
+            streamUrl: null,
+            type: activityType
+        );
     }
 
     private Task HandleLog(LogMessage logMessage)
