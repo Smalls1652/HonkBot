@@ -17,13 +17,23 @@ public class GenericCommandsModule : InteractionModuleBase
     }
 
     [SlashCommand(name: "hugemoji", description: "Make an emoji honking huge.")]
-    private async Task HandleHonkingHugemogi(IEmote emote)
+    private async Task HandleHonkingHugemoji(string emote)
     {
-        await RespondAsync(
-            embed: new EmbedBuilder()
-            {
-                ImageUrl = Emote.Parse(emote.Name).Url
-            }.Build()
-        );
+        try
+        {
+            await RespondAsync(
+                embed: new EmbedBuilder()
+                {
+                    ImageUrl = Emote.Parse(emote).Url
+                }.Build()
+            );
+        }
+        catch
+        {
+            await RespondAsync(
+                text: "Failed to parse emote. >:(",
+                ephemeral: true
+            );
+        }
     }
 }
