@@ -2,11 +2,8 @@ using System.Text.RegularExpressions;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
-using Discord.Net.Rest;
-using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmallsBot.Commands;
 
