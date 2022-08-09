@@ -4,13 +4,9 @@ name: Trigger auto deployment for honkbot-app
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/honkbot-app-AutoDeployTrigger-bbdd3dc5-3c31-47c8-ba0a-9c052fcf7945.yml'
+    tags: [ 'v*.*.*' ]
 
-  # Allow mannually trigger 
+  # Allow manual trigger 
   workflow_dispatch:      
 
 jobs:
