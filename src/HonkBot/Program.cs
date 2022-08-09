@@ -1,11 +1,10 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
+using HonkBot.Models.Services;
+using ImageMagick;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using HonkBot.Commands;
-using HonkBot.Models.Services;
 
 namespace HonkBot;
 
@@ -57,6 +56,8 @@ public class Program
         );
 
         using IHost host = hostBuilder.Build();
+
+        MagickNET.Initialize();
 
         IDiscordService discordSvc = host.Services.GetRequiredService<IDiscordService>();
         await discordSvc.Connect();
