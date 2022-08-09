@@ -16,6 +16,7 @@ public class HonkCommandModule : InteractionModuleBase
         _logger = logger;
     }
 
+    [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "honk-gm", description: "honk says gm to a user")]
     public async Task HandleHonkGmSlashCommand(IUser user)
     {
@@ -27,6 +28,7 @@ public class HonkCommandModule : InteractionModuleBase
         );
     }
 
+    [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "honk-angry", description:"honk mad")]
     public async Task HandleHonkAngryResponseCommand(string message)
     {
