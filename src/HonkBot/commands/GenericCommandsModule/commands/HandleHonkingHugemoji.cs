@@ -43,23 +43,8 @@ public partial class ImageCommandsModule : InteractionModuleBase
         try
         {
             _logger.LogInformation("Attempting to get emote from '{Url}'.", parsedEmote.Url);
-            SocketsHttpHandler httpHandler = new()
-            {
-                ConnectTimeout = TimeSpan.FromSeconds(2)
-            };
-            Stream? emoteImgStream;
-            using (HttpClient httpClient = new(httpHandler, true))
-            {
-                HttpRequestMessage requestMessage = new(
-                    method: HttpMethod.Get,
-                    requestUri: parsedEmote!.Url
-                );
 
-                HttpResponseMessage responseMessage = await httpClient.SendAsync(requestMessage);
-
-                emoteImgStream = await responseMessage.Content.ReadAsStreamAsync();
-            }
-
+            Stream? emoteImgStream = await DownloadEmoteAsync(parsedEmote);
 
             if (emoteImgStream is null)
             {
@@ -68,39 +53,9 @@ public partial class ImageCommandsModule : InteractionModuleBase
             else
             {
                 _logger.LogInformation("Attempting to resize emote.");
-                byte[] emoteImgResizedByteArray;
 
-                // We need to create a copy of the download image's stream.
-                // Whenever ImageMagick reads the image, it closes the stream
-                // and causes future use of the stream to fail.
-                MemoryStream emoteImgStreamCopy = new();
-                await emoteImgStream.CopyToAsync(emoteImgStreamCopy);
-
-                // Reset the position of both the original and copy to the beginning.
-                emoteImgStream.Position = 0;
-                emoteImgStreamCopy.Position = 0;
-
-                MagickImageInfo emoteImgInfo = new(emoteImgStreamCopy);
-                if (emoteImgInfo.Format == MagickFormat.Gif)
-                {
-                    using MagickImageCollection emoteImgCol = new(emoteImgStream);
-                    emoteImgCol.Coalesce();
-
-                    foreach (IMagickImage image in emoteImgCol)
-                    {
-                        image.Resize(256, 256);
-                    }
-                    emoteImgResizedByteArray = emoteImgCol.ToByteArray();
-                }
-                else
-                {
-                    using MagickImage emoteImg = new(emoteImgStream);
-                    emoteImg.Resize(256, 256);
-                    emoteImgResizedByteArray = emoteImg.ToByteArray();
-
-                }
-
-                MemoryStream emoteImgResizedStream = new(emoteImgResizedByteArray);
+                MagickImageInfo emoteImgInfo = await GetEmoteImageInfoAsync(emoteImgStream);
+                MemoryStream emoteImgResizedStream = ResizeEmote(emoteImgStream, emoteImgInfo);
 
                 _logger.LogInformation("Sending resized emote.");
                 await RespondWithFileAsync(
@@ -109,7 +64,6 @@ public partial class ImageCommandsModule : InteractionModuleBase
                 );
 
                 await emoteImgStream.DisposeAsync();
-                await emoteImgStreamCopy.DisposeAsync();
             }
         }
         catch (Exception e)
