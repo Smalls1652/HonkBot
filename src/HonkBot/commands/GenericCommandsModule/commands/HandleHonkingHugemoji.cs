@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace HonkBot.Commands;
 
-public partial class GenericCommandsModule : InteractionModuleBase
+public partial class ImageCommandsModule : InteractionModuleBase
 {
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "hugemoji", description: "Make an emote honking huge.")]

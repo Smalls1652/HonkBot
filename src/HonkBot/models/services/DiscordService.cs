@@ -46,7 +46,7 @@ public class DiscordService : IDiscordService
 
         _logger.LogInformation("Adding modules to interaction service.");
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
-        await _interactionService.AddModuleAsync<GenericCommandsModule>(_serviceProvider);
+        await _interactionService.AddModuleAsync<ImageCommandsModule>(_serviceProvider);
 
         _discordClient.Log += HandleLog;
         //_discordClient.MessageReceived += HandleMessageCommand;
