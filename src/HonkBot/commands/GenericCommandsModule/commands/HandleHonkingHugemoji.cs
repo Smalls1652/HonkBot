@@ -7,6 +7,10 @@ namespace HonkBot.Commands;
 
 public partial class ImageCommandsModule : InteractionModuleBase
 {
+    /// <summary>
+    /// Takes an emote and makes it bigger.
+    /// </summary>
+    /// <param name="emote">The emote to make bigger.</param>
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "hugemoji", description: "Make an emote honking huge.")]
     private async Task HandleHonkingHugemoji(
