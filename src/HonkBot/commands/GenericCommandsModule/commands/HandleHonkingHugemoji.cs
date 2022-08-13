@@ -5,15 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace HonkBot.Commands;
 
-public class GenericCommandsModule : InteractionModuleBase
+public partial class GenericCommandsModule : InteractionModuleBase
 {
-    private readonly ILogger<GenericCommandsModule> _logger;
-
-    public GenericCommandsModule(ILogger<GenericCommandsModule> logger)
-    {
-        _logger = logger;
-    }
-
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand(name: "hugemoji", description: "Make an emote honking huge.")]
     private async Task HandleHonkingHugemoji(
