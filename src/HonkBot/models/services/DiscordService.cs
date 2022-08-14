@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace HonkBot.Models.Services;
 
+/// <summary>
+/// The primary Discord Service for handling bot calls.
+/// </summary>
 public class DiscordService : IDiscordService
 {
     private readonly DiscordSocketClient _discordClient;
@@ -27,56 +30,85 @@ public class DiscordService : IDiscordService
     private InteractionService? _interactionService;
     private CommandService? _commandService;
 
+    /// <summary>
+    /// Connects to the Discord API.
+    /// </summary>
     public async Task Connect()
     {
         _logger.LogInformation("Connecting client.");
 
+        // Ensure that the 'DiscordClientToken' config value is not null.
         if (_config.GetValue<string>("DiscordClientToken") is null)
         {
             throw new Exception("DiscordClientToken environment variable not found.");
         }
 
+        // Start the login and the websocket client.
         await _discordClient.LoginAsync(TokenType.Bot, _config.GetValue<string>("DiscordClientToken"));
         await _discordClient.StartAsync();
 
+        // Initialize the interaction service.
         _logger.LogInformation("Initializing interaction service.");
         _interactionService = new(_discordClient.Rest);
 
+        // Initialize the command service.
         _commandService = new();
 
+        // Add the following modules to the interaction service:
+        // - HonkCommandModule
+        // - ImageCommandsModule
         _logger.LogInformation("Adding modules to interaction service.");
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
         await _interactionService.AddModuleAsync<ImageCommandsModule>(_serviceProvider);
 
+        // Add logging method for the DiscordClient, InteractionService, and CommandService.
         _discordClient.Log += HandleLog;
-        //_discordClient.MessageReceived += HandleMessageCommand;
         _interactionService.Log += HandleLog;
         _commandService.Log += HandleLog;
+
+        // Add slash command handling to the DiscordClient.
         _discordClient.InteractionCreated += HandleSlashCommand;
+
+        // Add method to run when the DiscordClient is in a ready state.
         _discordClient.Ready += OnClientReady;
+
+        // Add the guild update method.
         _discordClient.GuildUpdated += HandleGuildUpdate;
 
     }
 
+    /// <summary>
+    /// Registers commands and sets the initial presence status for HonkBot.
+    /// </summary>
     private async Task OnClientReady()
     {
 #if DEBUG
+        // If we're in a debug environment (development), then register the commands to the
+        // configured test server (guild).
         ulong testGuildId = _config.GetValue<ulong>("DiscordTestGuildId");
         _logger.LogInformation("In DEBUG mode. Registering to guild id: {testGuildId}", testGuildId);
         await _interactionService!.RegisterCommandsToGuildAsync(testGuildId);
 #else
+        // Otherwise, register the commands globally.
         await _interactionService!.RegisterCommandsGloballyAsync();
 #endif
 
+        // Log the registered commands.
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogInformation("Slash commands loaded: {commandsLoadedString}", slashCommandsLoadedString);
 
         string messageCommandsLoaded = string.Join(",", _commandService!.Commands.ToList());
         _logger.LogInformation("Mention commands loaded: {commandsLoadedString}", messageCommandsLoaded);
 
+        // Set the initial status.
         await SetGameStatus(null, ActivityType.Playing);
     }
 
+    /// <summary>
+    /// Sets the status of HonkBot.
+    /// </summary>
+    /// <param name="status">The status message to set.</param>
+    /// <param name="activityType">The <see cref="ActivityType" /> to set.</param>
     public async Task SetGameStatus(string? status, ActivityType activityType = ActivityType.Playing)
     {
         if (status is null)
@@ -91,6 +123,9 @@ public class DiscordService : IDiscordService
         );
     }
 
+    /// <summary>
+    /// Handles logging for the DiscordClient.
+    /// </summary>
     private Task HandleLog(LogMessage logMessage)
     {
         _logger.LogInformation("[{Severity}] {LogMessage}", logMessage.Severity, logMessage.ToString());
