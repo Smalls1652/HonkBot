@@ -21,50 +21,46 @@ public partial class HonkCommandModule : InteractionModuleBase
         PlatformEntityLink spotifyLink = musicEntityItem.LinksByPlatform!["spotify"];
 
         StreamingEntityItem itunes = musicEntityItem.EntitiesByUniqueId![itunesLink.EntityUniqueId!];
-        StreamingEntityItem youtube = musicEntityItem.EntitiesByUniqueId![youtubeLink.EntityUniqueId!];
-        StreamingEntityItem appleMusic = musicEntityItem.EntitiesByUniqueId![appleMusicLink.EntityUniqueId!];
-        StreamingEntityItem spotify = musicEntityItem.EntitiesByUniqueId![spotifyLink.EntityUniqueId!];
 
         using HttpClient httpClient = new();
         HttpResponseMessage responseMessage = await httpClient.GetAsync(itunes.ThumbnailUrl);
         Stream imageStream = await responseMessage.Content.ReadAsStreamAsync();
 
-        List<Embed> embedItems = new();
-        embedItems.Add(
-            new EmbedBuilder()
-            {
-                Title = "Play on YouTube!",
-                Description = $"Play {itunes.Title} by {itunes.ArtistName} on YouTube.",
-                Url = youtubeLink.Url!.ToString(),
-                ThumbnailUrl = youtube.ThumbnailUrl!.ToString()
-            }.Build()
+        ButtonBuilder youtubeButton = new(
+            label: "YouTube",
+            style: ButtonStyle.Link,
+            url: youtubeLink.Url!.ToString()
         );
 
-        embedItems.Add(
-            new EmbedBuilder()
-            {
-                Title = "Play on Apple Music!",
-                Description = $"Play {itunes.Title} by {itunes.ArtistName} on Apple Music.",
-                Url = appleMusicLink.Url!.ToString(),
-                ThumbnailUrl = appleMusic.ThumbnailUrl!.ToString()
-            }.Build()
+        ButtonBuilder appleMusicButton = new(
+            label: "Apple Music",
+            style: ButtonStyle.Link,
+            url: appleMusicLink.Url!.ToString()
         );
 
-        embedItems.Add(
-            new EmbedBuilder()
-            {
-                Title = "Play on Spotify!",
-                Description = $"Play {itunes.Title} by {itunes.ArtistName} on Spotify.",
-                Url = spotifyLink.Url!.ToString(),
-                ThumbnailUrl = spotify.ThumbnailUrl!.ToString()
-            }.Build()
+        ButtonBuilder spotifyButton = new(
+            label: "Spotify",
+            style: ButtonStyle.Link,
+            url: spotifyLink.Url!.ToString()
         );
+
+        ButtonBuilder moreLinksButton = new(
+            label: "More links",
+            style: ButtonStyle.Link,
+            url: musicEntityItem.PageUrl!.ToString()
+        );
+
+        ComponentBuilder linksComponentBuilder = new ComponentBuilder()
+            .WithButton(youtubeButton)
+            .WithButton(appleMusicButton)
+            .WithButton(spotifyButton)
+            .WithButton(moreLinksButton);
 
         await FollowupWithFileAsync(
-            text: $"Share links for **{itunes.Title}** by {itunes.ArtistName}.",
+            text: $"Streaming music links for **{itunes.Title} by {itunes.ArtistName}**.",
             fileStream: imageStream,
             fileName: $"{itunes.Title}.jpg",
-            embeds: embedItems.ToArray()
+            components: linksComponentBuilder.Build()
         );
     }
 }
