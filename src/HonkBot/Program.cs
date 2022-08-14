@@ -21,6 +21,7 @@ public class Program
                 {
                     services.AddSingleton<DiscordSocketClient>();
                     services.AddSingleton<IDiscordService, DiscordService>();
+                    services.AddSingleton<IOdesliService, OdesliService>();
                 }
             )
             .ConfigureLogging(
