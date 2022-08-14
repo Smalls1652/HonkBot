@@ -43,6 +43,8 @@ public partial class ImageCommandsModule : InteractionModuleBase
             return;
         }
 
+        await DeferAsync();
+
         try
         {
             // Download the emote's image file.
@@ -65,7 +67,7 @@ public partial class ImageCommandsModule : InteractionModuleBase
 
                 // Send the resized emote to the client.
                 _logger.LogInformation("Sending resized emote.");
-                await RespondWithFileAsync(
+                await FollowupWithFileAsync(
                     fileName: $"{parsedEmote.Name}.{emoteImgInfo.Format.ToString().ToLower()}",
                     fileStream: emoteImgResizedStream
                 );
@@ -77,7 +79,7 @@ public partial class ImageCommandsModule : InteractionModuleBase
         {
             // If any error occurred while resizing the emote,
             // send the base emote image back to the client.
-            
+
             _logger.LogInformation("Failed to resize the emote. Falling back to sending the raw emote image.");
 
             _logger.LogError(
@@ -85,7 +87,7 @@ public partial class ImageCommandsModule : InteractionModuleBase
                 message: "Error message: {Message}",
                 args: e.Message
             );
-            await RespondAsync(
+            await FollowupAsync(
                 embed: new EmbedBuilder()
                 {
                     ImageUrl = Emote.Parse(emote).Url
