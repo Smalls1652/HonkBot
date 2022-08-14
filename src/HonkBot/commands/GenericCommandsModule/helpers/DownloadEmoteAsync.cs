@@ -19,7 +19,7 @@ public partial class ImageCommandsModule : InteractionModuleBase
         // and then initialize the HttpClient.
         SocketsHttpHandler httpHandler = new()
         {
-            ConnectTimeout = TimeSpan.FromSeconds(2)
+            ConnectTimeout = TimeSpan.FromSeconds(10)
         };
         using HttpClient httpClient = new(httpHandler, true);
 
