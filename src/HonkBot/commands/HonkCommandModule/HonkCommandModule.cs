@@ -11,10 +11,12 @@ namespace HonkBot.Commands;
 public partial class HonkCommandModule : InteractionModuleBase
 {
     private readonly IDiscordService _discordService;
+    private readonly IOdesliService _odesliService;
     private readonly ILogger<HonkCommandModule> _logger;
-    public HonkCommandModule(IDiscordService discordService, ILogger<HonkCommandModule> logger)
+    public HonkCommandModule(IDiscordService discordService, IOdesliService odesliService, ILogger<HonkCommandModule> logger)
     {
         _discordService = discordService;
+        _odesliService = odesliService;
         _logger = logger;
     }
 }
