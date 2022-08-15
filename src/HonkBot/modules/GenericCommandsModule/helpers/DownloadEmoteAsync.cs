@@ -1,7 +1,7 @@
 using Discord;
 using Discord.Interactions;
 
-namespace HonkBot.Commands;
+namespace HonkBot.Modules;
 
 public partial class ImageCommandsModule : InteractionModuleBase
 {

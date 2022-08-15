@@ -3,7 +3,7 @@ using Discord.Interactions;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
 
-namespace HonkBot.Commands;
+namespace HonkBot.Modules;
 
 /// <summary>
 /// A slash command module for having HonkBot manipulate images.

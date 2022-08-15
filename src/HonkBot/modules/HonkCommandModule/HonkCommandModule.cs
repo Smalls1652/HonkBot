@@ -3,7 +3,7 @@ using Discord.Interactions;
 using HonkBot.Models.Services;
 using Microsoft.Extensions.Logging;
 
-namespace HonkBot.Commands;
+namespace HonkBot.Modules;
 
 /// <summary>
 /// The primary slash command module for interacting with HonkBot.
