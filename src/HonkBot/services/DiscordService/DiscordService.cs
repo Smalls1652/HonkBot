@@ -7,7 +7,7 @@ using HonkBot.Modules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace HonkBot.Models.Services;
+namespace HonkBot.Services;
 
 /// <summary>
 /// The primary Discord Service for handling bot calls.

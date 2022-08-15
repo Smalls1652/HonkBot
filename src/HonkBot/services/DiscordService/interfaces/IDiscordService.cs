@@ -1,6 +1,6 @@
 using Discord;
 
-namespace HonkBot.Models.Services;
+namespace HonkBot.Services;
 
 public interface IDiscordService
 {

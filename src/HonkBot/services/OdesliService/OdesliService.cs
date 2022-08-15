@@ -3,7 +3,7 @@ using System.Text.Json;
 using HonkBot.Models.Odesli;
 using Microsoft.Extensions.Logging;
 
-namespace HonkBot.Models.Services;
+namespace HonkBot.Services;
 
 public class OdesliService : IOdesliService
 {
