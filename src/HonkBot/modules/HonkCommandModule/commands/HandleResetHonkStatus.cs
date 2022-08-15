@@ -2,7 +2,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 
-namespace HonkBot.Commands;
+namespace HonkBot.Modules;
 
 public partial class HonkCommandModule : InteractionModuleBase
 {

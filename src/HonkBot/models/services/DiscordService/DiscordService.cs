@@ -3,7 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using HonkBot.Commands;
+using HonkBot.Modules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
