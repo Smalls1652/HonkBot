@@ -1,5 +1,5 @@
 ﻿using Discord.WebSocket;
-using HonkBot.Models.Services;
+using HonkBot.Services;
 using ImageMagick;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
