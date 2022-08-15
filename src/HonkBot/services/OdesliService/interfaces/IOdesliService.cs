@@ -1,6 +1,6 @@
 using HonkBot.Models.Odesli;
 
-namespace HonkBot.Models.Services;
+namespace HonkBot.Services;
 
 public interface IOdesliService
 {

@@ -1,6 +1,6 @@
 using Discord;
 using Discord.Interactions;
-using HonkBot.Models.Services;
+using HonkBot.Services;
 using Microsoft.Extensions.Logging;
 
 namespace HonkBot.Modules;
