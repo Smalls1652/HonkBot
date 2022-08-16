@@ -1,6 +1,4 @@
-using System.Text.RegularExpressions;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using HonkBot.Modules;
@@ -35,7 +33,6 @@ public class DiscordService : IDiscordService
     }
 
     private InteractionService? _interactionService;
-    private CommandService? _commandService;
 
     /// <inheritdoc cref="IDiscordService.Connect" />
     public async Task Connect()
@@ -56,9 +53,6 @@ public class DiscordService : IDiscordService
         _logger.LogInformation("Initializing interaction service.");
         _interactionService = new(_discordClient.Rest);
 
-        // Initialize the command service.
-        _commandService = new();
-
         // Add the following modules to the interaction service:
         // - HonkCommandModule
         // - ImageCommandsModule
@@ -66,10 +60,9 @@ public class DiscordService : IDiscordService
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
         await _interactionService.AddModuleAsync<ImageCommandsModule>(_serviceProvider);
 
-        // Add logging method for the DiscordClient, InteractionService, and CommandService.
+        // Add logging method for the DiscordClient and InteractionService.
         _discordClient.Log += HandleLog;
         _interactionService.Log += HandleLog;
-        _commandService.Log += HandleLog;
 
         // Add slash command handling to the DiscordClient.
         _discordClient.InteractionCreated += HandleSlashCommand;
@@ -107,9 +100,6 @@ public class DiscordService : IDiscordService
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogInformation("Slash commands loaded: {commandsLoadedString}", slashCommandsLoadedString);
 
-        string messageCommandsLoaded = string.Join(",", _commandService!.Commands.ToList());
-        _logger.LogInformation("Mention commands loaded: {commandsLoadedString}", messageCommandsLoaded);
-
         // Set the initial status.
         await SetGameStatus(null, ActivityType.Playing);
     }
@@ -137,38 +127,6 @@ public class DiscordService : IDiscordService
         _logger.LogInformation("[{Severity}] {LogMessage}", logMessage.Severity, logMessage.ToString());
 
         return Task.CompletedTask;
-    }
-
-    private async Task HandleMessageCommand(SocketMessage messageParam)
-    {
-        SocketUserMessage message = messageParam as SocketUserMessage;
-        if (message is null)
-        {
-            return;
-        }
-
-        int argPos = 0;
-        string currentUserString = _discordClient.CurrentUser.Mention;
-        currentUserString = currentUserString.Replace("<", "")
-            .Replace(">", "")
-            .Replace("@", "")
-            .Replace("!", "");
-        Regex hasMentionRegex = new($".*{currentUserString}.*");
-        if (message.HasMentionPrefix(_discordClient.CurrentUser, ref argPos) || hasMentionRegex.IsMatch(message.Content))
-        {
-            SocketCommandContext context = new(_discordClient, message);
-
-            _logger.LogInformation("'{Username}' mentioned honkbot.", context.User.Username);
-
-            await context.Channel.SendFileAsync(
-                filePath: "honk-gon-get-ya.png",
-                text: $"pls dont @ me, {context.User.Mention}"
-            );
-        }
-        else
-        {
-            return;
-        }
     }
 
     private async Task HandleSlashCommand(SocketInteraction interaction)
