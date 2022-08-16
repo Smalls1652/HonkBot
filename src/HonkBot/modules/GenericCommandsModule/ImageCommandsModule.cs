@@ -10,6 +10,9 @@ namespace HonkBot.Modules;
 /// </summary>
 public partial class ImageCommandsModule : InteractionModuleBase
 {
+    /// <summary>
+    /// An <see cref="ILogger" /> for logging.
+    /// </summary>
     private readonly ILogger<ImageCommandsModule> _logger;
 
     /// <summary>

@@ -12,9 +12,24 @@ namespace HonkBot.Services;
 /// </summary>
 public class DiscordService : IDiscordService
 {
+    /// <summary>
+    /// <see cref="DiscordSocketClient" /> passed in from dependency injection.
+    /// </summary>
     private readonly DiscordSocketClient _discordClient;
+
+    /// <summary>
+    /// An <see cref="ILogger" /> for logging.
+    /// </summary>
     private readonly ILogger<DiscordService> _logger;
+
+    /// <summary>
+    /// Config data passed in from dependency injection.
+    /// </summary>
     private readonly IConfiguration _config;
+
+    /// <summary>
+    /// Service objects passed in from dependency injection.
+    /// </summary>
     private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
@@ -32,6 +47,9 @@ public class DiscordService : IDiscordService
         _serviceProvider = serviceProvider;
     }
 
+    /// <summary>
+    /// The <see cref="InteractionService" /> used for the HonkBot to interact with commands.
+    /// </summary>
     private InteractionService? _interactionService;
 
     /// <inheritdoc cref="IDiscordService.Connect" />

@@ -10,8 +10,19 @@ namespace HonkBot.Services;
 /// </summary>
 public class OdesliService : IOdesliService
 {
+    /// <summary>
+    /// An <see cref="ILogger" /> for logging.
+    /// </summary>
     private readonly ILogger<OdesliService> _logger;
+
+    /// <summary>
+    /// A <see cref="HttpClient" /> object used by the service to send API calls.
+    /// </summary>
     private readonly HttpClient _httpClient = new();
+
+    /// <summary>
+    /// The base URI for the Odesli API.
+    /// </summary>
     private readonly Uri _baseUri = new("https://api.song.link/v1-alpha.1/");
 
     /// <summary>
