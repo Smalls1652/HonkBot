@@ -8,8 +8,15 @@ namespace HonkBot.Modules;
 
 public partial class HonkCommandModule : InteractionModuleBase
 {
+    /// <summary>
+    /// Gets share links for a song on multiple music streaming services and returns it to the client.
+    /// </summary>
+    /// <param name="musicShareUrl">A URL from a music streaming service.</param>
     [SlashCommand(name: "sharemusic", description: "Get share links for multiple streaming music services.")]
-    private async Task HandleGetMusicShareLinks(string musicShareUrl)
+    private async Task HandleGetMusicShareLinks(
+        [Summary(name: "url", description: "A URL of a song/album generated from a music streaming service.")]
+        string musicShareUrl
+    )
     {
         await DeferAsync();
 

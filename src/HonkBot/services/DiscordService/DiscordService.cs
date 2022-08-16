@@ -19,6 +19,13 @@ public class DiscordService : IDiscordService
     private readonly IConfiguration _config;
     private readonly IServiceProvider _serviceProvider;
 
+    /// <summary>
+    /// Initializes <see cref="DiscordService" /> for use.
+    /// </summary>
+    /// <param name="discordClient">The <see cref="DiscordSocketClient" /> used for dependency injection.</param>
+    /// <param name="logger">The logger assigned to <see cref="DiscordService" /> for dependency injection.</param>
+    /// <param name="config">Config data passed in for dependency injection.</param>
+    /// <param name="serviceProvider">Services passed in for dependency injection.</param>
     public DiscordService(DiscordSocketClient discordClient, ILogger<DiscordService> logger, IConfiguration config, IServiceProvider serviceProvider)
     {
         _discordClient = discordClient;
@@ -30,9 +37,7 @@ public class DiscordService : IDiscordService
     private InteractionService? _interactionService;
     private CommandService? _commandService;
 
-    /// <summary>
-    /// Connects to the Discord API.
-    /// </summary>
+    /// <inheritdoc cref="IDiscordService.Connect" />
     public async Task Connect()
     {
         _logger.LogInformation("Connecting client.");
@@ -109,11 +114,7 @@ public class DiscordService : IDiscordService
         await SetGameStatus(null, ActivityType.Playing);
     }
 
-    /// <summary>
-    /// Sets the status of HonkBot.
-    /// </summary>
-    /// <param name="status">The status message to set.</param>
-    /// <param name="activityType">The <see cref="ActivityType" /> to set.</param>
+    /// <inheritdoc cref="IDiscordService.SetGameStatus(string?, ActivityType)" />
     public async Task SetGameStatus(string? status, ActivityType activityType = ActivityType.Playing)
     {
         if (status is null)

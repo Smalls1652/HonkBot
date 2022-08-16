@@ -8,9 +8,14 @@ using Microsoft.Extensions.Logging;
 
 namespace HonkBot;
 
+/// <summary>
+/// HonkBot's main entrypoint class.
+/// </summary>
 public class Program
 {
-
+    /// <summary>
+    /// The main entrypoint method for HonkBot. This is what will run when HonkBot is ran.
+    /// </summary>
     public static async Task Main()
     {
         IHostBuilder hostBuilder = Host.CreateDefaultBuilder();
