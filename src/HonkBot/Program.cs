@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using HonkBot.Services;
 using ImageMagick;
 using Microsoft.Extensions.Configuration;
@@ -20,11 +21,20 @@ public class Program
     {
         IHostBuilder hostBuilder = Host.CreateDefaultBuilder();
 
+        GatewayIntents gatewayIntents = GatewayIntents.AllUnprivileged - GatewayIntents.GuildInvites - GatewayIntents.GuildScheduledEvents;
+
+        DiscordSocketConfig discordSocketConfig = new()
+        {
+            GatewayIntents = gatewayIntents
+        };
+
         hostBuilder
             .ConfigureServices(
                 (_, services) =>
                 {
-                    services.AddSingleton<DiscordSocketClient>();
+                    services.AddSingleton<DiscordSocketClient>(
+                        implementationInstance: new(discordSocketConfig)
+                    );
                     services.AddSingleton<IDiscordService, DiscordService>();
                     services.AddSingleton<IOdesliService, OdesliService>();
                 }
