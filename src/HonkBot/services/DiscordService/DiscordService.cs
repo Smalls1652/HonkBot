@@ -118,7 +118,7 @@ public class DiscordService : IDiscordService
     {
         if (status is null)
         {
-            status = "honking away";
+            status = "gm simulator 2022";
         }
 
         await _discordClient.SetGameAsync(
