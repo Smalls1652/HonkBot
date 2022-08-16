@@ -10,8 +10,19 @@ namespace HonkBot.Modules;
 /// </summary>
 public partial class HonkCommandModule : InteractionModuleBase
 {
+    /// <summary>
+    /// <see cref="IDiscordService" /> passed in from dependency injection.
+    /// </summary>
     private readonly IDiscordService _discordService;
+
+    /// <summary>
+    /// <see cref="IOdesliService" /> passed in from dependency injection.
+    /// </summary>
     private readonly IOdesliService _odesliService;
+
+    /// <summary>
+    /// An <see cref="ILogger" /> for logging.
+    /// </summary>
     private readonly ILogger<HonkCommandModule> _logger;
 
     /// <summary>
