@@ -87,10 +87,15 @@ public class DiscordService : IDiscordService
         // configured test server (guild).
         ulong testGuildId = _config.GetValue<ulong>("DiscordTestGuildId");
         _logger.LogInformation("In DEBUG mode. Registering to guild id: {testGuildId}", testGuildId);
-        await _interactionService!.RegisterCommandsToGuildAsync(testGuildId);
+        await _interactionService!.RegisterCommandsToGuildAsync(
+            guildId: testGuildId,
+            deleteMissing: true
+        );
 #else
         // Otherwise, register the commands globally.
-        await _interactionService!.RegisterCommandsGloballyAsync();
+        await _interactionService!.RegisterCommandsGloballyAsync(
+            deleteMissing: true
+        );
 #endif
 
         // Log the registered commands.
