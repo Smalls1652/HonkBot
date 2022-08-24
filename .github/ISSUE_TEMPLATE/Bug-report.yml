@@ -17,6 +17,8 @@ body:
       options:
         - "Crash"
         - "Unexpected behavior"
+        - "Wrong output"
+        - "Never responded"
         - "Other (Provide below)"
     validations:
       required: true
@@ -35,13 +37,9 @@ body:
       label: Describe the bug.
       description: A description of the bug you encountered. Please be as detailed as possible.
       placeholder: |
-        The hostpool got yeeted out of existence during the evaluation that was triggered at 4:20 AM.
+        HonkBot yeeted himself out of the Discord server.
     validations:
       required: true
-  - type: markdown
-    attributes:
-      value: |
-        If you have Application Insights enabled on your Functions app instance, you can also add them to the report.
   - id: BugLogs
     type: textarea
     attributes:
