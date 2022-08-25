@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using HonkBot.Models.Tools;
 using HonkBot.Modules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -91,6 +92,7 @@ public class DiscordService : IDiscordService
         // Add the guild update method.
         _discordClient.GuildUpdated += HandleGuildUpdate;
 
+        _discordClient.MessageReceived += HandleRandomReactionAsync;
     }
 
     /// <summary>
@@ -151,6 +153,55 @@ public class DiscordService : IDiscordService
     {
         SocketInteractionContext interactionContext = new(_discordClient, interaction);
         await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+    }
+
+    private async Task HandleRandomReactionAsync(SocketMessage message)
+    {
+        if (message.Author.Id != _discordClient.CurrentUser.Id)
+        {
+            int randomPercent = RandomGenerator.GetRandomNumber(0, 100);
+            _logger.LogInformation("Should HonkBot randomly add a reaction? {Percent}", randomPercent);
+
+            if (randomPercent <= 10)
+            {
+                _logger.LogInformation("HonkBot is going to add a random emote reaction to message ID '{MessageId}'.", message.Id);
+
+                SocketGuild? guild = GetChannelGuild(message.Channel);
+
+                if (guild is not null)
+                {
+                    _logger.LogInformation("Message originated from '{Guild}'. Getting a random emote.", guild.Name);
+
+                    int randomEmoteIndex = RandomGenerator.GetRandomNumber(0, guild.Emotes.ToList().Count - 1);
+
+                    GuildEmote randomEmote = guild.Emotes.ToArray()[randomEmoteIndex];
+
+                    _logger.LogInformation("Adding emote, '{EmoteName}', to message.", randomEmote.Name);
+                    await message.AddReactionAsync(randomEmote);
+                }
+            }
+        }
+    }
+
+    private SocketGuild? GetChannelGuild(ISocketMessageChannel channel)
+    {
+        List<SocketGuild> guilds = _discordClient.Guilds.ToList();
+
+        SocketGuild? foundGuild = null;
+        bool guildFound = false;
+
+        for (int i = 0; i < guilds.Count || guildFound != true; i++)
+        {
+            _logger.LogInformation("Seeing if '{Guild}' is where the message was sent from.", guilds[i].Name);
+            if (guilds[i].Channels.Contains(channel as SocketChannel))
+            {
+                _logger.LogInformation("Found in '{Guild}'.", guilds[i].Name);
+                foundGuild =  guilds[i];
+                guildFound = true;
+            }
+        }
+
+        return foundGuild;
     }
 
     private async Task HandleGuildUpdate(SocketGuild guild1, SocketGuild guild2)
