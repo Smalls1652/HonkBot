@@ -18,15 +18,21 @@ public partial class HonkCommandModule : InteractionModuleBase
     {
         await DeferAsync();
 
+        _logger.LogInformation("'{User}' rolled a D20 for '{RollFor}'.", Context.User.Username, rollFor);
+
         int userD20RollVal = RandomGenerator.GetRandomNumber(
             minValue: 1,
             maxValue: 20
         );
 
+        _logger.LogInformation("'{User}' rolled '{RollResult}'.", Context.User.Username, userD20RollVal);
+
         int dmD20RollVal = RandomGenerator.GetRandomNumber(
             minValue: 1,
             maxValue: 20
         );
+
+        _logger.LogInformation("'HonkBot' rolled '{RollResult}'.", dmD20RollVal);
 
         bool passesCheck;
         if (userD20RollVal == 1)
@@ -42,10 +48,12 @@ public partial class HonkCommandModule : InteractionModuleBase
             passesCheck = userD20RollVal > dmD20RollVal;
         }
 
+        _logger.LogInformation("'{User}' was successful: {PassCheck}", Context.User.Username, passesCheck);
+
         string passCheckMessage = passesCheck switch
         {
-            true => "**Check result:**\n```diff\n-Failed\n```",
-            _ => "**Check result:**\n```diff\n+Passed\n```"
+            false => "**Check result:** Failed",
+            _ => "**Check result:** Successful"
         };
 
         string outputMessage = userD20RollVal switch
@@ -54,6 +62,7 @@ public partial class HonkCommandModule : InteractionModuleBase
             20 => $"Wow! {Context.User.Mention} rolled a natural `20` for '**{rollFor}**'! {Context.User.Mention} is either lucky or cheating!\n\n{passCheckMessage}",
             _ => $"{Context.User.Mention} rolled `{userD20RollVal}` for '**{rollFor}**'.\n\n{passCheckMessage}"
         };
+        
         await FollowupAsync(
             text: outputMessage
         );
