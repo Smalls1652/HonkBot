@@ -2,6 +2,7 @@ name: Feature request/update
 description: Adding new features or changing existing features
 labels:
   - "enhancement"
+  - "feature update"
 title: "[Feature]: "
 body:
   - id: ChangeType
