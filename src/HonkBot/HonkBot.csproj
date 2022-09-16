@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <IsCiOrPreviewBuild>false</IsCiOrPreviewBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>HonkBot</PackageId>
     <Authors>Timothy Small</Authors>
     <Company>Smalls.Online</Company>
@@ -17,6 +21,10 @@
     <Description>
       A very stupid Discord bot I'm using in a private Discord server.
     </Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsCiOrPreviewBuild)'=='true'">
+    <VersionSuffix>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>
