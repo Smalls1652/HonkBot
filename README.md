@@ -8,8 +8,8 @@ A very stupid Discord bot I'm using in a private Discord server.
 
 ## 🗂️ Dependencies used
 
-* [Discord.net](https://github.com/discord-net/Discord.Net)
-* [Magick.net](https://github.com/dlemstra/Magick.NET)
+* [Discord.NET](https://github.com/discord-net/Discord.Net)
+* [Magick.NET](https://github.com/dlemstra/Magick.NET)
 
 ## 🤝 License
 
