@@ -14,6 +14,7 @@ A very stupid Discord bot I'm using in a private Discord server.
   * [Powered by Odesli (Formerly known as Song.link)](https://odesli.co/)
 * Make any Discord emote huge (static or animated).
 * Make any Discord emote huge and wide (static or animated).
+* Has a small chance to randomly add a reaction to any message.
 
 ## 🗂️ Dependencies used
 
