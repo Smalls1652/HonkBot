@@ -1,6 +1,6 @@
 # HonkBot
 
-![honk header](.github/imgs/header.png)
+![honk header](.github/imgs/honkbot-header.jpg)
 
 A very stupid Discord bot I'm using in a private Discord server.
 
