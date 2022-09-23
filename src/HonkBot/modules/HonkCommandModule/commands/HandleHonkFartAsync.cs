@@ -17,8 +17,9 @@ public partial class HonkCommandModule : InteractionModuleBase
     {
         _logger.LogInformation("'{Username}' called the 'HonkFart' command on message '{MessageId}'.", Context.User.Username, message.Id);
 
+        char dirSep = Path.DirectorySeparatorChar;
         FileStream fileContents = File.Open(
-            path: Path.Combine(Environment.CurrentDirectory, "assets/audio/fart.mp3"),
+            path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}audio{dirSep}fart.mp3"),
             mode: FileMode.Open,
             access: FileAccess.Read
         );
