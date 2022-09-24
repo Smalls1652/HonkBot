@@ -15,11 +15,15 @@ public partial class HonkCommandModule : InteractionModuleBase
     [MessageCommand(name: "HonkShard")]
     public async Task HandleHonkFartAsync(IMessage message)
     {
+        await DeferAsync(
+            ephemeral: true
+        );
+
         _logger.LogInformation("'{Username}' called the 'HonkFart' command on message '{MessageId}'.", Context.User.Username, message.Id);
 
         char dirSep = Path.DirectorySeparatorChar;
         FileStream fileContents = File.Open(
-            path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}audio{dirSep}fart.mp3"),
+            path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
             mode: FileMode.Open,
             access: FileAccess.Read
         );
@@ -27,13 +31,13 @@ public partial class HonkCommandModule : InteractionModuleBase
         await Context.Channel.SendFileAsync(
             text: null,
             stream: fileContents,
-            filename: "shard.mp3",
+            filename: "sharding.mp4",
             messageReference: new MessageReference(
                 messageId: message.Id
             )
         );
 
-        await RespondAsync(
+        await FollowupAsync(
             text: "fart bomb dropped",
             ephemeral: true
         );
