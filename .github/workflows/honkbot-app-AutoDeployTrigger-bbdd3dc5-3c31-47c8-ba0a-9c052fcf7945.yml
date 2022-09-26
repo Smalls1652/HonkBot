@@ -1,4 +1,4 @@
-name: Trigger auto deployment for honkbot-app
+name: Deploy HonkBot to Azure
 
 # When this action will be executed
 on:
