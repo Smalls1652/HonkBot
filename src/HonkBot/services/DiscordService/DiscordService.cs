@@ -93,6 +93,7 @@ public class DiscordService : IDiscordService
         _discordClient.GuildUpdated += HandleGuildUpdate;
 
         _discordClient.MessageReceived += HandleRandomReactionAsync;
+        _discordClient.MessageReceived += HandleRandomFartBombAsync;
     }
 
     /// <summary>
@@ -155,6 +156,42 @@ public class DiscordService : IDiscordService
         await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
     }
 
+    private async Task HandleRandomFartBombAsync(SocketMessage message)
+    {
+        if (message.Author.Id != _discordClient.CurrentUser.Id)
+        {
+            int randomNum01 = RandomGenerator.GetRandomNumber(0, 100);
+            int randomNum02 = RandomGenerator.GetRandomNumber(0, 100);
+            int randomNum03 = RandomGenerator.GetRandomNumber(0, 100);
+            _logger.LogInformation("Should HonkBot randomly drop a fart bomb? {RandomNumber01},{RandomNumber02},{RandomNumber03}/100", randomNum01, randomNum02, randomNum03);
+
+            // randomNum01-03 must each be less than or equal to 10 in order to activate.
+            if (randomNum01 <= 10 && randomNum02 <= 10 && randomNum03 <= 10)
+            {
+                _logger.LogInformation("HonkBot is going to respond with a fart bomb to message ID '{MessageId}'.", message.Id);
+
+                char dirSep = Path.DirectorySeparatorChar;
+                FileStream fileContents = File.Open(
+                    path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
+                    mode: FileMode.Open,
+                    access: FileAccess.Read
+                );
+
+                await message.Channel.SendFileAsync(
+                    text: null,
+                    stream: fileContents,
+                    filename: "sharding.mp4",
+                    messageReference: new MessageReference(
+                        messageId: message.Id
+                    )
+                );
+
+                fileContents.Close();
+                fileContents.Dispose();
+            }
+        }
+    }
+
     private async Task HandleRandomReactionAsync(SocketMessage message)
     {
         if (message.Author.Id != _discordClient.CurrentUser.Id)
@@ -196,7 +233,7 @@ public class DiscordService : IDiscordService
             if (guilds[i].Channels.Contains(channel as SocketChannel))
             {
                 _logger.LogInformation("Found in '{Guild}'.", guilds[i].Name);
-                foundGuild =  guilds[i];
+                foundGuild = guilds[i];
                 guildFound = true;
             }
         }
