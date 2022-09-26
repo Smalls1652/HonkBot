@@ -12,14 +12,14 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// <param name="message"></param>
     /// <returns></returns>
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    [MessageCommand(name: "HonkShard")]
+    [MessageCommand(name: "Drop fart bomb")]
     public async Task HandleHonkFartAsync(IMessage message)
     {
         await DeferAsync(
             ephemeral: true
         );
 
-        _logger.LogInformation("'{Username}' called the 'HonkFart' command on message '{MessageId}'.", Context.User.Username, message.Id);
+        _logger.LogInformation("'{Username}' called the 'Drop fart bomb' command on message '{MessageId}'.", Context.User.Username, message.Id);
 
         char dirSep = Path.DirectorySeparatorChar;
         FileStream fileContents = File.Open(
