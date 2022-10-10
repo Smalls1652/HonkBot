@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('macOS')) == 'true'">
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.1.0" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.2.0" />
   </ItemGroup>
 
   <ItemGroup>
