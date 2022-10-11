@@ -37,3 +37,9 @@ Roll a D20 dice and see if you pass/fail the check.
 Get links to multiple music streaming services from a single share link from another streaming service. For example, you can use the share link for a song from Apple Music and get links to Spotify, YouTube, and more.
 
 ![Share music example](../.github/imgs/docs/features/sharemusic.gif)
+
+## App commands
+
+### Drop fart bomb
+
+Drop a fart bomb on any message. Works the same as [the random variant](#randomly-drop-a-fart-bomb-to-a-message).
