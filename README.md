@@ -16,6 +16,8 @@ A very stupid Discord bot I'm using in a private Discord server.
 * Make any Discord emote huge and wide (static or animated).
 * Has a small chance to randomly add a reaction to any message.
 
+A more detailed summary can be found [here](./docs/features.md)
+
 ## 🗂️ Dependencies used
 
 * [Discord.NET](https://github.com/discord-net/Discord.Net)
