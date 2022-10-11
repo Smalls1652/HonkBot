@@ -1,10 +1,6 @@
 {
     "build": {
-        "dockerfile": "Dockerfile",
-        "args": {
-            "VARIANT": "6.0",
-            "NODE_VERSION": "none"
-        }
+        "dockerfile": "Dockerfile"
     },
     "forwardPorts": [],
     "customizations": {
@@ -27,10 +23,26 @@
         }
     },
     "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "os-provided"
+        },
         "ghcr.io/devcontainers/features/github-cli:1": {
             "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/dotnet:1": {
+            "version": "6.0",
+            "runtimeOnly": false,
+            "installUsingApt": false
         }
     },
+    "runArgs": [
+        "--userns=keep-id"
+    ],
     "remoteUser": "vscode",
     "containerUser": "vscode"
 }
