@@ -36,13 +36,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.*" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.*" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.*" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('macOS')) == 'false'">
-    <PackageReference Include="Magick.NET-Q8-x64" Version="12.2.*" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('macOS')) == 'true'">
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.2.*" />
   </ItemGroup>
 
