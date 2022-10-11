@@ -31,3 +31,9 @@ Much like [`/hugemoji`](#hugemoji)... Make any emote, including animated emote, 
 Roll a D20 dice and see if you pass/fail the check.
 
 ![Rolling a D20 example](../.github/imgs/docs/features/roll-d20.gif)
+
+### `/sharemusic`
+
+Get links to multiple music streaming services from a single share link from another streaming service. For example, you can use the share link for a song from Apple Music and get links to Spotify, YouTube, and more.
+
+![Share music example](../.github/imgs/docs/features/sharemusic.gif)
