@@ -1,0 +1,36 @@
+{
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "VARIANT": "6.0",
+            "NODE_VERSION": "none"
+        }
+    },
+    "forwardPorts": [],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csharp"
+            ],
+            "settings": {
+                "csharp.inlayHints.parameters.enabled": true,
+                "csharp.semanticHighlighting.enabled": true,
+                "csharp.suppressDotnetRestoreNotification": true,
+                "omnisharp.enableDecompilationSupport": true,
+                "omnisharp.enableRoslynAnalyzers": true,
+                "omnisharp.organizeImportsOnFormat": true,
+                "omnisharp.useModernNet": true,
+                "razor.devmode": false,
+                "razor.format.enable": true,
+                "razor.trace": "Verbose"
+            }
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "latest"
+        }
+    },
+    "remoteUser": "vscode",
+    "containerUser": "vscode"
+}
