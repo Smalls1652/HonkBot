@@ -11,7 +11,8 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// Send a message, secretly, as HonkBot.
     /// </summary>
     /// <param name="message">The message to send as HonkBot.</param>
-    [RequireOwner]
+    [RequireOwner()]
+    [EnabledInDm(isEnabled: false)]
     [SlashCommand(name: "honk-message", description: "Send a message, secretly, as HonkBot.")]
     private async Task HandleSendMessageAsHonk(
         [Summary(name: "message", description: "The message to send as HonkBot.")]

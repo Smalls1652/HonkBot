@@ -10,6 +10,7 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// <summary>
     /// HonkBot rolls a D20.
     /// </summary>
+    [EnabledInDm(isEnabled: true)]
     [SlashCommand(name: "roll-d20", description: "Roll a D20 dice!")]
     private async Task HandleDTwentyRollAsync(
         [Summary(name: "roll-for", description: "What you want to roll for?")]
