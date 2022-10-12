@@ -110,12 +110,11 @@ public class DiscordService : IDiscordService
             guildId: testGuildId,
             deleteMissing: true
         );
-#else
-        // Otherwise, register the commands globally.
+#endif
+        _logger.LogInformation("Registering commands globally.");
         await _interactionService!.RegisterCommandsGloballyAsync(
             deleteMissing: true
         );
-#endif
 
         // Log the registered commands.
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
