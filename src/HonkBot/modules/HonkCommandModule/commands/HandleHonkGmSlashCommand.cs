@@ -11,6 +11,7 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// </summary>
     /// <param name="user">The user to have HonkBot say gm to.</param>
     [RequireUserPermission(ChannelPermission.SendMessages)]
+    [EnabledInDm(isEnabled: false)]
     [SlashCommand(name: "honk-gm", description: "honk says gm to a user")]
     public async Task HandleHonkGmSlashCommand(
         [Summary(description: "The user to have HonkBot say gm to.")]
