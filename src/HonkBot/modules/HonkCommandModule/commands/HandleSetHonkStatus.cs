@@ -11,7 +11,8 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// </summary>
     /// <param name="status">The status to set.</param>
     /// <param name="activityType">The type of activity to show.</param>
-    [DefaultMemberPermissions(GuildPermission.Administrator)]
+    [RequireOwner()]
+    [EnabledInDm(isEnabled: true)]
     [SlashCommand("set-honk-status", "Set honk's status")]
     public async Task HandleSetHonkStatus(
         [Summary(description: "The status you want to set for HonkBot.")]
