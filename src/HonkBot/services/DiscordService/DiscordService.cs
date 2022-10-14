@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using HonkBot.Models.Config;
 using HonkBot.Models.Tools;
 using HonkBot.Modules;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,11 @@ public class DiscordService : IDiscordService
     private readonly IConfiguration _config;
 
     /// <summary>
+    /// The <see cref="ICosmosDbService" /> passed in from dependency injection.
+    /// </summary>
+    private readonly ICosmosDbService _cosmosDbService;
+
+    /// <summary>
     /// Service objects passed in from dependency injection.
     /// </summary>
     private readonly IServiceProvider _serviceProvider;
@@ -39,12 +45,14 @@ public class DiscordService : IDiscordService
     /// <param name="discordClient">The <see cref="DiscordSocketClient" /> used for dependency injection.</param>
     /// <param name="logger">The logger assigned to <see cref="DiscordService" /> for dependency injection.</param>
     /// <param name="config">Config data passed in for dependency injection.</param>
+    /// <param name="cosmosDbService">The <see cref="ICosmosDbService" /> passed in from dependency injection.</param>
     /// <param name="serviceProvider">Services passed in for dependency injection.</param>
-    public DiscordService(DiscordSocketClient discordClient, ILogger<DiscordService> logger, IConfiguration config, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordClient, ILogger<DiscordService> logger, IConfiguration config, ICosmosDbService cosmosDbService, IServiceProvider serviceProvider)
     {
         _discordClient = discordClient;
         _logger = logger;
         _config = config;
+        _cosmosDbService = cosmosDbService;
         _serviceProvider = serviceProvider;
     }
 
@@ -78,6 +86,7 @@ public class DiscordService : IDiscordService
         _logger.LogInformation("Adding modules to interaction service.");
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
         await _interactionService.AddModuleAsync<ImageCommandsModule>(_serviceProvider);
+        await _interactionService.AddModuleAsync<HonkBotConfigCommandModule>(_serviceProvider);
 
         // Add logging method for the DiscordClient and InteractionService.
         _discordClient.Log += HandleLog;
@@ -91,6 +100,9 @@ public class DiscordService : IDiscordService
 
         // Add the guild update method.
         _discordClient.GuildUpdated += HandleGuildUpdate;
+
+        // Add the new guild method.
+        _discordClient.JoinedGuild += HandleGuildAddAsync;
 
         _discordClient.MessageReceived += HandleRandomReactionAsync;
         _discordClient.MessageReceived += HandleRandomFartBombAsync;
@@ -120,6 +132,9 @@ public class DiscordService : IDiscordService
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogInformation("Slash commands loaded: {commandsLoadedString}", slashCommandsLoadedString);
 
+        // Add any new servers to the database.
+        await AddServerConfigsOnStartupAsync();
+
         // Set the initial status.
         await SetGameStatus(null, ActivityType.Playing);
     }
@@ -136,6 +151,40 @@ public class DiscordService : IDiscordService
             name: status,
             streamUrl: null,
             type: activityType
+        );
+    }
+
+    private async Task AddServerConfigsOnStartupAsync()
+    {
+        IReadOnlyCollection<SocketGuild> currentlyJoinedGuilds = _discordClient.Guilds;
+        foreach (SocketGuild guild in currentlyJoinedGuilds)
+        {
+            try
+            {
+                await _cosmosDbService.GetServerConfigAsync(guild.Id);
+            }
+            catch (Exception)
+            {
+                _logger.LogWarning("Server config not found for guild ID '{guildId}'. Creating new config and adding to database.", guild.Id);
+                ServerConfig serverConfig = new(guild.Id);
+                await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
+
+                await guild.DefaultChannel.SendMessageAsync(
+                    text: "gm I've just been updated to utilize per-server configs. Administrators can run `/get-honkbot-config` and `/set-honkbot-config` to view and modify the config for this server."
+                );
+            }
+        }
+    }
+
+    private async Task HandleGuildAddAsync(SocketGuild guild)
+    {
+        _logger.LogInformation("Guild added: {guildName} ({guildId})", guild.Name, guild.Id);
+        _logger.LogInformation("Adding initial server config to database.");
+        ServerConfig serverConfig = new(guild.Id);
+        await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
+
+        await guild.DefaultChannel.SendMessageAsync(
+            text: "gm Hello there! I'm HonkBot. There are some per-server configs that can be set for random message events. Administrators can run `/get-honkbot-config` and `/set-honkbot-config` to view and modify the configs for this server."
         );
     }
 
@@ -157,36 +206,61 @@ public class DiscordService : IDiscordService
 
     private async Task HandleRandomFartBombAsync(SocketMessage message)
     {
-        if (message.Author.Id != _discordClient.CurrentUser.Id)
+        ulong guildId = 0;
+        foreach (SocketGuild guild in _discordClient.Guilds)
         {
-            int randomNum01 = RandomGenerator.GetRandomNumber(0, 100);
-            int randomNum02 = RandomGenerator.GetRandomNumber(0, 100);
-            int randomNum03 = RandomGenerator.GetRandomNumber(0, 100);
-            _logger.LogInformation("Should HonkBot randomly drop a fart bomb? {RandomNumber01},{RandomNumber02},{RandomNumber03}/100", randomNum01, randomNum02, randomNum03);
-
-            // randomNum01-03 must each be less than or equal to 10 in order to activate.
-            if (randomNum01 <= 10 && randomNum02 <= 10 && randomNum03 <= 10)
+            if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
-                _logger.LogInformation("HonkBot is going to respond with a fart bomb to message ID '{MessageId}'.", message.Id);
+                guildId = guild.Id;
+                break;
+            }
+        }
 
-                char dirSep = Path.DirectorySeparatorChar;
-                FileStream fileContents = File.Open(
-                    path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
-                    mode: FileMode.Open,
-                    access: FileAccess.Read
-                );
+        if (guildId == 0)
+        {
+            _logger.LogError("Could not find guild ID for message.");
+            return;
+        }
 
-                await message.Channel.SendFileAsync(
-                    text: null,
-                    stream: fileContents,
-                    filename: "sharding.mp4",
-                    messageReference: new MessageReference(
-                        messageId: message.Id
-                    )
-                );
+        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(guildId);
 
-                fileContents.Close();
-                fileContents.Dispose();
+        if (!serverConfig.RandomFartBombConfig.Enabled)
+        {
+            _logger.LogWarning("Random fart bomb is disabled for guild ID '{guildId}'.", guildId);
+        }
+        else
+        {
+            if (message.Author.Id != _discordClient.CurrentUser.Id)
+            {
+                int randomNum01 = RandomGenerator.GetRandomNumber(0, 100);
+                int randomNum02 = RandomGenerator.GetRandomNumber(0, 100);
+                int randomNum03 = RandomGenerator.GetRandomNumber(0, 100);
+                _logger.LogInformation("Should HonkBot randomly drop a fart bomb? {RandomNumber01},{RandomNumber02},{RandomNumber03}/100", randomNum01, randomNum02, randomNum03);
+
+                // randomNum01-03 must each be less than or equal to 10 in order to activate.
+                if (randomNum01 <= 10 && randomNum02 <= 10 && randomNum03 <= 10)
+                {
+                    _logger.LogInformation("HonkBot is going to respond with a fart bomb to message ID '{MessageId}'.", message.Id);
+
+                    char dirSep = Path.DirectorySeparatorChar;
+                    FileStream fileContents = File.Open(
+                        path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
+                        mode: FileMode.Open,
+                        access: FileAccess.Read
+                    );
+
+                    await message.Channel.SendFileAsync(
+                        text: null,
+                        stream: fileContents,
+                        filename: "sharding.mp4",
+                        messageReference: new MessageReference(
+                            messageId: message.Id
+                        )
+                    );
+
+                    fileContents.Close();
+                    fileContents.Dispose();
+                }
             }
         }
     }

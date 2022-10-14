@@ -37,6 +37,7 @@ public class Program
                     );
                     services.AddSingleton<IDiscordService, DiscordService>();
                     services.AddSingleton<IOdesliService, OdesliService>();
+                    services.AddSingleton<ICosmosDbService, CosmosDbService>();
                 }
             )
             .ConfigureLogging(
