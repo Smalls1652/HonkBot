@@ -10,10 +10,11 @@ public class ServerConfig : IServerConfig
     /// <summary>
     /// Default constructor for the <see cref="ServerConfig"/> class.
     /// </summary>
-    public ServerConfig()
+    public ServerConfig(ulong guildId)
     {
         Id = Guid.NewGuid().ToString();
         PartitionKey = "server-config-item";
+        GuildId = guildId;
         RandomReactConfig = new RandomReactConfig();
         RandomFartBombConfig = new RandomFartBombConfig();
     }
