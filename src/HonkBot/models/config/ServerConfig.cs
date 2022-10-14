@@ -31,11 +31,11 @@ public class ServerConfig : IServerConfig
 
     /// <inheritdoc cref="IServerConfig.Id"/>
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     /// <inheritdoc cref="IServerConfig.PartitionKey"/>
     [JsonPropertyName("partitionKey")]
-    public string PartitionKey  { get; set; }
+    public string PartitionKey { get; set; } = null!;
 
     /// <inheritdoc cref="IServerConfig.GuildId"/>
     [JsonPropertyName("guildId")]
