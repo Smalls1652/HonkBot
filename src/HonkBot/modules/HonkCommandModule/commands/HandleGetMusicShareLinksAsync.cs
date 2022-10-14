@@ -21,8 +21,10 @@ public partial class HonkCommandModule : InteractionModuleBase
     {
         await DeferAsync();
 
-        MusicEntityItem musicEntityItem = await _odesliService.GetShareLinksAsync(musicShareUrl);
+        // Get the music entity item from Odesli.
+        MusicEntityItem musicEntityItem = await GetMusicEntityItemAsync(musicShareUrl);
 
+        // Attempt to get the iTunes platform info from the music entity item.
         PlatformEntityLink? itunesLink;
         try
         {
@@ -30,6 +32,8 @@ public partial class HonkCommandModule : InteractionModuleBase
         }
         catch
         {
+            // If the music entity item doesn't have an iTunes link,
+            // throw an error, send a follow-up message to the user, and prematurely end the command.
             _logger.LogError("No iTunes link found for {musicShareUrl}", musicShareUrl);
             await FollowupAsync(
                 text: "I was unable to get the necessary information from Odesli. :(",
@@ -38,114 +42,14 @@ public partial class HonkCommandModule : InteractionModuleBase
             return;
         }
 
-        PlatformEntityLink? youtubeLink;
-        try
-        {
-            youtubeLink = musicEntityItem.LinksByPlatform!["youtube"];
-        }
-        catch
-        {
-            _logger.LogWarning("No YouTube link found for {musicShareUrl}", musicShareUrl);
-            youtubeLink = null;
-        }
-
-        PlatformEntityLink? appleMusicLink;
-        try
-        {
-            appleMusicLink = musicEntityItem.LinksByPlatform!["appleMusic"];
-        }
-        catch
-        {
-            _logger.LogWarning("No Apple Music link found for {musicShareUrl}", musicShareUrl);
-            appleMusicLink = null;
-        }
-
-        PlatformEntityLink? spotifyLink;
-        try
-        {
-            spotifyLink = musicEntityItem.LinksByPlatform!["spotify"];
-        }
-        catch
-        {
-            _logger.LogWarning("No Spotify link found for {musicShareUrl}", musicShareUrl);
-            spotifyLink = null;
-        }
-
+        // Get the album art from the streaming entity item for iTunes.
         StreamingEntityItem itunes = musicEntityItem.EntitiesByUniqueId![itunesLink.EntityUniqueId!];
+        Stream imageStream = await GetMusicEntityItemAlbumArt(itunes);
 
-        using HttpClient httpClient = new();
-        HttpResponseMessage responseMessage = await httpClient.GetAsync(itunes.ThumbnailUrl);
-        Stream imageStream = await responseMessage.Content.ReadAsStreamAsync();
+        // Generate the music share components.
+        ComponentBuilder linksComponentBuilder = GenerateMusicShareComponents(musicEntityItem);
 
-        ButtonBuilder youtubeButton;
-        if (youtubeLink is not null)
-        {
-            youtubeButton = new(
-                label: "YouTube",
-                style: ButtonStyle.Link,
-                url: youtubeLink.Url!.ToString()
-            );
-        }
-        else
-        {
-            youtubeButton = new(
-                label: "YouTube 🚫",
-                style: ButtonStyle.Secondary,
-                isDisabled: true,
-                customId: $"{musicEntityItem.EntityUniqueId}-youtube-disabled"
-            );
-        }
-
-        ButtonBuilder appleMusicButton;
-        if (appleMusicLink is not null)
-        {
-            appleMusicButton = new(
-                label: "Apple Music",
-                style: ButtonStyle.Link,
-                url: appleMusicLink.Url!.ToString()
-            );
-        }
-        else
-        {
-            appleMusicButton = new(
-                label: "Apple Music 🚫",
-                style: ButtonStyle.Secondary,
-                isDisabled: true,
-                customId: $"{musicEntityItem.EntityUniqueId}-appleMusic-disabled"
-            );
-        }
-
-        ButtonBuilder spotifyButton;
-        if (spotifyLink is not null)
-        {
-            spotifyButton = new(
-                label: "Spotify",
-                style: ButtonStyle.Link,
-                url: spotifyLink.Url!.ToString()
-            );
-        }
-        else
-        {
-            spotifyButton = new(
-                label: "Spotify 🚫",
-                style: ButtonStyle.Secondary,
-                isDisabled: true,
-                customId: $"{musicEntityItem.EntityUniqueId}-spotify-disabled"
-            );
-        }
-
-        ButtonBuilder moreLinksButton = new(
-            label: "More links",
-            style: ButtonStyle.Link,
-            url: musicEntityItem.PageUrl!.ToString()
-        );
-
-        ComponentBuilder linksComponentBuilder = new ComponentBuilder()
-            .WithButton(youtubeButton)
-            .WithButton(appleMusicButton)
-            .WithButton(spotifyButton)
-            .WithButton(moreLinksButton);
-
+        // Send the follow-up message with the music share links.
         await FollowupWithFileAsync(
             text: $"Streaming music links for **{itunes.Title} by {itunes.ArtistName}**.",
             fileStream: imageStream,
