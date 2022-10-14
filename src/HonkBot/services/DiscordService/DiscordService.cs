@@ -296,7 +296,7 @@ public class DiscordService : IDiscordService
                 int randomPercent = RandomGenerator.GetRandomNumber(0, 100);
                 _logger.LogInformation("Should HonkBot randomly add a reaction? {Percent}", randomPercent);
 
-                if (randomPercent <= 10)
+                if (randomPercent <= serverConfig.RandomReactConfig.PercentChanceToHappen)
                 {
                     _logger.LogInformation("HonkBot is going to add a random emote reaction to message ID '{MessageId}'.", message.Id);
 
