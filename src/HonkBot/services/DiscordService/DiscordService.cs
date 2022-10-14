@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using HonkBot.Models.Config;
 using HonkBot.Models.Tools;
 using HonkBot.Modules;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,11 @@ public class DiscordService : IDiscordService
     private readonly IConfiguration _config;
 
     /// <summary>
+    /// The <see cref="ICosmosDbService" /> passed in from dependency injection.
+    /// </summary>
+    private readonly ICosmosDbService _cosmosDbService;
+
+    /// <summary>
     /// Service objects passed in from dependency injection.
     /// </summary>
     private readonly IServiceProvider _serviceProvider;
@@ -39,12 +45,14 @@ public class DiscordService : IDiscordService
     /// <param name="discordClient">The <see cref="DiscordSocketClient" /> used for dependency injection.</param>
     /// <param name="logger">The logger assigned to <see cref="DiscordService" /> for dependency injection.</param>
     /// <param name="config">Config data passed in for dependency injection.</param>
+    /// <param name="cosmosDbService">The <see cref="ICosmosDbService" /> passed in from dependency injection.</param>
     /// <param name="serviceProvider">Services passed in for dependency injection.</param>
-    public DiscordService(DiscordSocketClient discordClient, ILogger<DiscordService> logger, IConfiguration config, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordClient, ILogger<DiscordService> logger, IConfiguration config, ICosmosDbService cosmosDbService, IServiceProvider serviceProvider)
     {
         _discordClient = discordClient;
         _logger = logger;
         _config = config;
+        _cosmosDbService = cosmosDbService;
         _serviceProvider = serviceProvider;
     }
 
@@ -92,6 +100,9 @@ public class DiscordService : IDiscordService
         // Add the guild update method.
         _discordClient.GuildUpdated += HandleGuildUpdate;
 
+        // Add the new guild method.
+        _discordClient.JoinedGuild += HandleGuildAddAsync;
+
         _discordClient.MessageReceived += HandleRandomReactionAsync;
         _discordClient.MessageReceived += HandleRandomFartBombAsync;
     }
@@ -120,6 +131,9 @@ public class DiscordService : IDiscordService
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogInformation("Slash commands loaded: {commandsLoadedString}", slashCommandsLoadedString);
 
+        // Add any new servers to the database.
+        await AddServerConfigsOnStartupAsync();
+
         // Set the initial status.
         await SetGameStatus(null, ActivityType.Playing);
     }
@@ -137,6 +151,32 @@ public class DiscordService : IDiscordService
             streamUrl: null,
             type: activityType
         );
+    }
+
+    private async Task AddServerConfigsOnStartupAsync()
+    {
+        IReadOnlyCollection<SocketGuild> currentlyJoinedGuilds = _discordClient.Guilds;
+        foreach (SocketGuild guild in currentlyJoinedGuilds)
+        {
+            try
+            {
+                await _cosmosDbService.GetServerConfigAsync(guild.Id);
+            }
+            catch (Exception)
+            {
+                _logger.LogWarning("Server config not found for guild ID '{guildId}'. Creating new config and adding to database.", guild.Id);
+                ServerConfig serverConfig = new(guild.Id);
+                await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
+            }
+        }
+    }
+
+    private async Task HandleGuildAddAsync(SocketGuild guild)
+    {
+        _logger.LogInformation("Guild added: {guildName} ({guildId})", guild.Name, guild.Id);
+        _logger.LogInformation("Adding initial server config to database.");
+        ServerConfig serverConfig = new(guild.Id);
+        await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
     }
 
     /// <summary>
