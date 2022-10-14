@@ -18,7 +18,7 @@ public interface IServerConfig
     /// <summary>
     /// The Discord Server's Guild ID.
     /// </summary>
-    ulong  GuildId { get; set; }
+    string GuildId { get; set; }
 
     /// <summary>
     /// Configuration for the random react feature in a specific server.

@@ -20,7 +20,7 @@ public class ServerConfig : IServerConfig
     /// <summary>
     /// Constructor for <see cref="ServerConfig" /> with a provided guild ID.
     /// </summary>
-    public ServerConfig(ulong guildId)
+    public ServerConfig(string guildId)
     {
         Id = Guid.NewGuid().ToString();
         PartitionKey = "server-config-item";
@@ -39,7 +39,7 @@ public class ServerConfig : IServerConfig
 
     /// <inheritdoc cref="IServerConfig.GuildId"/>
     [JsonPropertyName("guildId")]
-    public ulong GuildId { get; set; }
+    public string GuildId { get; set; }
 
     /// <inheritdoc cref="IServerConfig.RandomReactConfig"/>
     [JsonPropertyName("randomReactConfig")]

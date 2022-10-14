@@ -19,7 +19,7 @@ public partial class HonkBotConfigCommandModule : InteractionModuleBase
     {
         await DeferAsync();
 
-        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(Context.Guild.Id);
+        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(Context.Guild.Id.ToString());
 
         StringBuilder outputText = new($"**Randomly add reactions to messages:** `{serverConfig.RandomReactConfig.Enabled}` (`{serverConfig.RandomReactConfig.PercentChanceToHappen}%` chance to occur)");
         outputText.AppendLine("\n");

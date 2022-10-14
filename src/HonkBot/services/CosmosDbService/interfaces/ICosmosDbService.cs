@@ -12,7 +12,7 @@ public interface ICosmosDbService
     /// </summary>
     /// <param name="guildId">The Discord Server guild ID to look up.</param>
     /// <returns>The <see cref="ServerConfig" /> item.</returns>
-    Task<ServerConfig> GetServerConfigAsync(ulong guildId);
+    Task<ServerConfig> GetServerConfigAsync(string guildId);
 
     /// <summary>
     /// Add or update a server config in the database.

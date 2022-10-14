@@ -26,7 +26,7 @@ public partial class HonkBotConfigCommandModule : InteractionModuleBase
     {
         await DeferAsync();
 
-        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(Context.Guild.Id);
+        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(Context.Guild.Id.ToString());
 
         switch (configItem)
         {

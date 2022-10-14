@@ -6,16 +6,16 @@ namespace HonkBot.Services;
 
 public partial class CosmosDbService : ICosmosDbService
 {
-    /// <inheritdoc cref="ICosmosDbService.GetServerConfigAsync(ulong)"/>
+    /// <inheritdoc cref="ICosmosDbService.GetServerConfigAsync(string)"/>
     /// <exception cref="Exception">Thrown when the database fails to return a result.</exception>
-    public async Task<ServerConfig> GetServerConfigAsync(ulong guildId)
+    public async Task<ServerConfig> GetServerConfigAsync(string guildId)
     {
         _logger.LogInformation("Getting server config for guild ID '{guildId}'.", guildId);
         List<ServerConfig> serverConfigs = new();
 
         // Create a query to get the server config from the database.
         Container container = _cosmosDbClient.GetContainer(_databaseId, "server-configs");
-        QueryDefinition queryDef = new($"SELECT * FROM c WHERE c.guildId = {guildId}");
+        QueryDefinition queryDef = new($"SELECT * FROM c WHERE c.guildId = \"{guildId}\"");
         FeedIterator<ServerConfig> queryResults = container.GetItemQueryIterator<ServerConfig>(queryDef);
 
         // Iterate through the results and add them to the list.

@@ -161,12 +161,12 @@ public class DiscordService : IDiscordService
         {
             try
             {
-                await _cosmosDbService.GetServerConfigAsync(guild.Id);
+                await _cosmosDbService.GetServerConfigAsync(guild.Id.ToString());
             }
             catch (Exception)
             {
                 _logger.LogWarning("Server config not found for guild ID '{guildId}'. Creating new config and adding to database.", guild.Id);
-                ServerConfig serverConfig = new(guild.Id);
+                ServerConfig serverConfig = new(guild.Id.ToString());
                 await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
 
                 await guild.DefaultChannel.SendMessageAsync(
@@ -180,7 +180,7 @@ public class DiscordService : IDiscordService
     {
         _logger.LogInformation("Guild added: {guildName} ({guildId})", guild.Name, guild.Id);
         _logger.LogInformation("Adding initial server config to database.");
-        ServerConfig serverConfig = new(guild.Id);
+        ServerConfig serverConfig = new(guild.Id.ToString());
         await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
 
         await guild.DefaultChannel.SendMessageAsync(
@@ -206,17 +206,17 @@ public class DiscordService : IDiscordService
 
     private async Task HandleRandomFartBombAsync(SocketMessage message)
     {
-        ulong guildId = 0;
+        string? guildId = null;
         foreach (SocketGuild guild in _discordClient.Guilds)
         {
             if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
-                guildId = guild.Id;
+                guildId = guild.Id.ToString();
                 break;
             }
         }
 
-        if (guildId == 0)
+        if (guildId is null)
         {
             _logger.LogError("Could not find guild ID for message.");
             return;
@@ -267,17 +267,17 @@ public class DiscordService : IDiscordService
 
     private async Task HandleRandomReactionAsync(SocketMessage message)
     {
-        ulong guildId = 0;
+        string? guildId = null;
         foreach (SocketGuild guild in _discordClient.Guilds)
         {
             if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
-                guildId = guild.Id;
+                guildId = guild.Id.ToString();
                 break;
             }
         }
 
-        if (guildId == 0)
+        if (guildId is null)
         {
             _logger.LogError("Could not find guild ID for message.");
             return;
