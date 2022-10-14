@@ -86,6 +86,7 @@ public class DiscordService : IDiscordService
         _logger.LogInformation("Adding modules to interaction service.");
         await _interactionService.AddModuleAsync<HonkCommandModule>(_serviceProvider);
         await _interactionService.AddModuleAsync<ImageCommandsModule>(_serviceProvider);
+        await _interactionService.AddModuleAsync<HonkBotConfigCommandModule>(_serviceProvider);
 
         // Add logging method for the DiscordClient and InteractionService.
         _discordClient.Log += HandleLog;
@@ -197,36 +198,61 @@ public class DiscordService : IDiscordService
 
     private async Task HandleRandomFartBombAsync(SocketMessage message)
     {
-        if (message.Author.Id != _discordClient.CurrentUser.Id)
+        ulong guildId = 0;
+        foreach (SocketGuild guild in _discordClient.Guilds)
         {
-            int randomNum01 = RandomGenerator.GetRandomNumber(0, 100);
-            int randomNum02 = RandomGenerator.GetRandomNumber(0, 100);
-            int randomNum03 = RandomGenerator.GetRandomNumber(0, 100);
-            _logger.LogInformation("Should HonkBot randomly drop a fart bomb? {RandomNumber01},{RandomNumber02},{RandomNumber03}/100", randomNum01, randomNum02, randomNum03);
-
-            // randomNum01-03 must each be less than or equal to 10 in order to activate.
-            if (randomNum01 <= 10 && randomNum02 <= 10 && randomNum03 <= 10)
+            if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
-                _logger.LogInformation("HonkBot is going to respond with a fart bomb to message ID '{MessageId}'.", message.Id);
+                guildId = guild.Id;
+                break;
+            }
+        }
 
-                char dirSep = Path.DirectorySeparatorChar;
-                FileStream fileContents = File.Open(
-                    path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
-                    mode: FileMode.Open,
-                    access: FileAccess.Read
-                );
+        if (guildId == 0)
+        {
+            _logger.LogError("Could not find guild ID for message.");
+            return;
+        }
 
-                await message.Channel.SendFileAsync(
-                    text: null,
-                    stream: fileContents,
-                    filename: "sharding.mp4",
-                    messageReference: new MessageReference(
-                        messageId: message.Id
-                    )
-                );
+        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(guildId);
 
-                fileContents.Close();
-                fileContents.Dispose();
+        if (!serverConfig.RandomFartBombConfig.Enabled)
+        {
+            _logger.LogWarning("Random fart bomb is disabled for guild ID '{guildId}'.", guildId);
+        }
+        else
+        {
+            if (message.Author.Id != _discordClient.CurrentUser.Id)
+            {
+                int randomNum01 = RandomGenerator.GetRandomNumber(0, 100);
+                int randomNum02 = RandomGenerator.GetRandomNumber(0, 100);
+                int randomNum03 = RandomGenerator.GetRandomNumber(0, 100);
+                _logger.LogInformation("Should HonkBot randomly drop a fart bomb? {RandomNumber01},{RandomNumber02},{RandomNumber03}/100", randomNum01, randomNum02, randomNum03);
+
+                // randomNum01-03 must each be less than or equal to 10 in order to activate.
+                if (randomNum01 <= 10 && randomNum02 <= 10 && randomNum03 <= 10)
+                {
+                    _logger.LogInformation("HonkBot is going to respond with a fart bomb to message ID '{MessageId}'.", message.Id);
+
+                    char dirSep = Path.DirectorySeparatorChar;
+                    FileStream fileContents = File.Open(
+                        path: Path.Combine(Environment.CurrentDirectory, $"assets{dirSep}video{dirSep}sharding.mp4"),
+                        mode: FileMode.Open,
+                        access: FileAccess.Read
+                    );
+
+                    await message.Channel.SendFileAsync(
+                        text: null,
+                        stream: fileContents,
+                        filename: "sharding.mp4",
+                        messageReference: new MessageReference(
+                            messageId: message.Id
+                        )
+                    );
+
+                    fileContents.Close();
+                    fileContents.Dispose();
+                }
             }
         }
     }
