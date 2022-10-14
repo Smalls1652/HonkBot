@@ -7,6 +7,15 @@ namespace HonkBot.Models.Config;
 /// </summary>
 public class RandomReactConfig : IRandomReactConfig
 {
+    /// <summary>
+    /// Default constructor for the <see cref="RandomReactConfig"/> class.
+    /// </summary>
+    public RandomReactConfig()
+    {
+        Enabled = false;
+        PercentChanceToHappen = 10;
+    }
+
     /// <inheritdoc cref="IRandomReactConfig.Enabled"/>
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -19,7 +28,7 @@ public class RandomReactConfig : IRandomReactConfig
         set => SetPercentChanceToHappen(value);
     }
 
-    private int _percentChanceToHappen = 10;
+    private int _percentChanceToHappen;
 
     /// <summary>
     /// Set the PercentChanceToHappen property.

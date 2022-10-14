@@ -7,6 +7,14 @@ namespace HonkBot.Models.Config;
 /// </summary>
 public class RandomFartBombConfig : IRandomFartBombConfig
 {
+    /// <summary>
+    /// Default constructor for the <see cref="RandomFartBombConfig"/> class.
+    /// </summary>
+    public RandomFartBombConfig()
+    {
+        Enabled = false;
+    }
+
     /// <inheritdoc cref="IRandomFartBombConfig.Enabled"/>
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
