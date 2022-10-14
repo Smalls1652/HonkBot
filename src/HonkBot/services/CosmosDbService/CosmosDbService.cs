@@ -1,3 +1,4 @@
+using System.Text.Json;
 using HonkBot.Models.Tools;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,10 @@ public partial class CosmosDbService : ICosmosDbService
     /// </summary>
     private readonly string _databaseId;
 
+    private readonly CosmosDbJsonSerializer _cosmosDbJsonSerializer = new(
+        new()
+    );
+
     /// <summary>
     /// Default constructor for <see cref="CosmosDbService" />.
     /// </summary>
@@ -37,7 +42,11 @@ public partial class CosmosDbService : ICosmosDbService
         _databaseId = _config.GetValue<string>("CosmosDbDatabaseId");
 
         _cosmosDbClient = new(
-            connectionString: _config.GetValue<string>("CosmosDbConnectionString")
+            connectionString: _config.GetValue<string>("CosmosDbConnectionString"),
+            clientOptions: new()
+            {
+                Serializer = _cosmosDbJsonSerializer
+            }
         );
     }
 

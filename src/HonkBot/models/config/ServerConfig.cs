@@ -8,7 +8,17 @@ namespace HonkBot.Models.Config;
 public class ServerConfig : IServerConfig
 {
     /// <summary>
-    /// Default constructor for the <see cref="ServerConfig"/> class.
+    /// Default constructor for <see cref="ServerConfig" />.
+    /// </summary>
+    [JsonConstructor]
+    public ServerConfig()
+    {
+        RandomReactConfig = new();
+        RandomFartBombConfig = new();
+    }
+
+    /// <summary>
+    /// Constructor for <see cref="ServerConfig" /> with a provided guild ID.
     /// </summary>
     public ServerConfig(ulong guildId)
     {
@@ -21,11 +31,11 @@ public class ServerConfig : IServerConfig
 
     /// <inheritdoc cref="IServerConfig.Id"/>
     [JsonPropertyName("id")]
-    public string Id { get; }
+    public string Id { get; set; }
 
     /// <inheritdoc cref="IServerConfig.PartitionKey"/>
     [JsonPropertyName("partitionKey")]
-    public string PartitionKey  { get; }
+    public string PartitionKey  { get; set; }
 
     /// <inheritdoc cref="IServerConfig.GuildId"/>
     [JsonPropertyName("guildId")]
@@ -33,9 +43,9 @@ public class ServerConfig : IServerConfig
 
     /// <inheritdoc cref="IServerConfig.RandomReactConfig"/>
     [JsonPropertyName("randomReactConfig")]
-    public RandomReactConfig RandomReactConfig { get; }
+    public RandomReactConfig RandomReactConfig { get; set; }
 
     /// <inheritdoc cref="IServerConfig.RandomFartBombConfig"/>
     [JsonPropertyName("randomFartBombConfig")]
-    public RandomFartBombConfig RandomFartBombConfig { get; }
+    public RandomFartBombConfig RandomFartBombConfig { get; set; }
 }

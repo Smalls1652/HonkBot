@@ -28,13 +28,10 @@ public partial class CosmosDbService : ICosmosDbService
         catch (CosmosException dbException) when (dbException.StatusCode == HttpStatusCode.NotFound)
         {
             _logger.LogInformation("Server config for guild ID '{guildId}' not found. Creating new entry in database.", serverConfig.GuildId);
-            Stream serverConfigJsonStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(serverConfig)));
-            string serverConfigJson = JsonSerializer.Serialize(serverConfig);
-            _logger.LogInformation("Server config JSON: {serverConfigJson}", serverConfigJson);
 
             // If the server config doesn't exist in the database already, create it.
-            await container.CreateItemStreamAsync(
-                streamPayload: serverConfigJsonStream,
+            await container.CreateItemAsync(
+                item: serverConfig,
                 partitionKey: new(serverConfig.PartitionKey)
             );
         }

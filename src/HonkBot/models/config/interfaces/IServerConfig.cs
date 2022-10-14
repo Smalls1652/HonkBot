@@ -8,12 +8,12 @@ public interface IServerConfig
     /// <summary>
     /// A unique identifier for the server and it's config.
     /// </summary>
-    string Id { get; }
+    string Id { get; set; }
 
     /// <summary>
     /// The partition key for the database.
     /// </summary>
-    string PartitionKey { get; }
+    string PartitionKey { get; set; }
 
     /// <summary>
     /// The Discord Server's Guild ID.
@@ -23,10 +23,10 @@ public interface IServerConfig
     /// <summary>
     /// Configuration for the random react feature in a specific server.
     /// </summary>
-    RandomReactConfig RandomReactConfig { get; }
+    RandomReactConfig RandomReactConfig { get; set; }
 
     /// <summary>
     /// Configuration for the random fart bomb feature in a specific server.
     /// </summary>
-    RandomFartBombConfig RandomFartBombConfig { get; }
+    RandomFartBombConfig RandomFartBombConfig { get; set; }
 }
