@@ -11,6 +11,11 @@ public interface IServerConfig
     string Id { get; }
 
     /// <summary>
+    /// The partition key for the database.
+    /// </summary>
+    string PartitionKey { get; }
+
+    /// <summary>
     /// The Discord Server's Guild ID.
     /// </summary>
     ulong  GuildId { get; set; }

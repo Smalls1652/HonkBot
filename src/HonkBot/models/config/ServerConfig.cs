@@ -13,6 +13,7 @@ public class ServerConfig : IServerConfig
     public ServerConfig()
     {
         Id = Guid.NewGuid().ToString();
+        PartitionKey = "server-config-item";
         RandomReactConfig = new RandomReactConfig();
         RandomFartBombConfig = new RandomFartBombConfig();
     }
@@ -20,6 +21,10 @@ public class ServerConfig : IServerConfig
     /// <inheritdoc cref="IServerConfig.Id"/>
     [JsonPropertyName("id")]
     public string Id { get; }
+
+    /// <inheritdoc cref="IServerConfig.PartitionKey"/>
+    [JsonPropertyName("partitionKey")]
+    public string PartitionKey  { get; }
 
     /// <inheritdoc cref="IServerConfig.GuildId"/>
     [JsonPropertyName("guildId")]
