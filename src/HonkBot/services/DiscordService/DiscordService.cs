@@ -267,27 +267,52 @@ public class DiscordService : IDiscordService
 
     private async Task HandleRandomReactionAsync(SocketMessage message)
     {
-        if (message.Author.Id != _discordClient.CurrentUser.Id)
+        ulong guildId = 0;
+        foreach (SocketGuild guild in _discordClient.Guilds)
         {
-            int randomPercent = RandomGenerator.GetRandomNumber(0, 100);
-            _logger.LogInformation("Should HonkBot randomly add a reaction? {Percent}", randomPercent);
-
-            if (randomPercent <= 10)
+            if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
-                _logger.LogInformation("HonkBot is going to add a random emote reaction to message ID '{MessageId}'.", message.Id);
+                guildId = guild.Id;
+                break;
+            }
+        }
 
-                SocketGuild? guild = GetChannelGuild(message.Channel);
+        if (guildId == 0)
+        {
+            _logger.LogError("Could not find guild ID for message.");
+            return;
+        }
 
-                if (guild is not null)
+        ServerConfig serverConfig = await _cosmosDbService.GetServerConfigAsync(guildId);
+
+        if (!serverConfig.RandomReactConfig.Enabled)
+        {
+            _logger.LogWarning("Random reactions on messages is disabled for guild ID '{guildId}'.", guildId);
+        }
+        else
+        {
+            if (message.Author.Id != _discordClient.CurrentUser.Id)
+            {
+                int randomPercent = RandomGenerator.GetRandomNumber(0, 100);
+                _logger.LogInformation("Should HonkBot randomly add a reaction? {Percent}", randomPercent);
+
+                if (randomPercent <= 10)
                 {
-                    _logger.LogInformation("Message originated from '{Guild}'. Getting a random emote.", guild.Name);
+                    _logger.LogInformation("HonkBot is going to add a random emote reaction to message ID '{MessageId}'.", message.Id);
 
-                    int randomEmoteIndex = RandomGenerator.GetRandomNumber(0, guild.Emotes.ToList().Count - 1);
+                    SocketGuild? guild = GetChannelGuild(message.Channel);
 
-                    GuildEmote randomEmote = guild.Emotes.ToArray()[randomEmoteIndex];
+                    if (guild is not null)
+                    {
+                        _logger.LogInformation("Message originated from '{Guild}'. Getting a random emote.", guild.Name);
 
-                    _logger.LogInformation("Adding emote, '{EmoteName}', to message.", randomEmote.Name);
-                    await message.AddReactionAsync(randomEmote);
+                        int randomEmoteIndex = RandomGenerator.GetRandomNumber(0, guild.Emotes.ToList().Count - 1);
+
+                        GuildEmote randomEmote = guild.Emotes.ToArray()[randomEmoteIndex];
+
+                        _logger.LogInformation("Adding emote, '{EmoteName}', to message.", randomEmote.Name);
+                        await message.AddReactionAsync(randomEmote);
+                    }
                 }
             }
         }
