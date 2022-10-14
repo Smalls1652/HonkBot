@@ -168,6 +168,10 @@ public class DiscordService : IDiscordService
                 _logger.LogWarning("Server config not found for guild ID '{guildId}'. Creating new config and adding to database.", guild.Id);
                 ServerConfig serverConfig = new(guild.Id);
                 await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
+
+                await guild.DefaultChannel.SendMessageAsync(
+                    text: "gm I've just been updated to utilize per-server configs. Administrators can run `/get-honkbot-config` and `/set-honkbot-config` to view and modify the config for this server."
+                );
             }
         }
     }
@@ -178,6 +182,10 @@ public class DiscordService : IDiscordService
         _logger.LogInformation("Adding initial server config to database.");
         ServerConfig serverConfig = new(guild.Id);
         await _cosmosDbService.AddOrUpdateServerConfigAsync(serverConfig);
+
+        await guild.DefaultChannel.SendMessageAsync(
+            text: "gm Hello there! I'm HonkBot. There are some per-server configs that can be set for random message events. Administrators can run `/get-honkbot-config` and `/set-honkbot-config` to view and modify the configs for this server."
+        );
     }
 
     /// <summary>
