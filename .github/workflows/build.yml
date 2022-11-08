@@ -21,7 +21,7 @@ jobs:
       - name: Setup dotnet SDK
         uses: actions/setup-dotnet@v3.0.3
         with:
-          dotnet-version: '6.0.x'
+          global-json-file: global.json
 
       - name: Run 'dotnet restore'
         run: dotnet restore ./src/HonkBot/

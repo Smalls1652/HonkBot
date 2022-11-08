@@ -39,7 +39,14 @@ public partial class CosmosDbService : ICosmosDbService
     {
         _config = config;
         _logger = logger;
-        _databaseId = _config.GetValue<string>("CosmosDbDatabaseId");
+        string? retrievedDatabaseIdAppSetting = _config.GetValue<string>("CosmosDbDatabaseId");
+
+        if (retrievedDatabaseIdAppSetting is null)
+        {
+            throw new ArgumentNullException("The 'CosmosDbDatabaseId' app setting was null. Failed to initialize CosmosDbService.");
+        }
+
+        _databaseId = retrievedDatabaseIdAppSetting;
 
         _cosmosDbClient = new(
             connectionString: _config.GetValue<string>("CosmosDbConnectionString"),

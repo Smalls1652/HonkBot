@@ -39,7 +39,7 @@ public class ServerConfig : IServerConfig
 
     /// <inheritdoc cref="IServerConfig.GuildId"/>
     [JsonPropertyName("guildId")]
-    public string GuildId { get; set; }
+    public string GuildId { get; set; } = null!;
 
     /// <inheritdoc cref="IServerConfig.RandomReactConfig"/>
     [JsonPropertyName("randomReactConfig")]
