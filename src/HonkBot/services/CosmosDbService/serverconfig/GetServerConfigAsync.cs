@@ -21,7 +21,7 @@ public partial class CosmosDbService : ICosmosDbService
         // Iterate through the results and add them to the list.
         while (queryResults.HasMoreResults)
         {
-            foreach (ServerConfig serverConfig in await queryResults.ReadNextAsync())
+            foreach (var serverConfig in await queryResults.ReadNextAsync())
             {
                 serverConfigs.Add(serverConfig);
             }

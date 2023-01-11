@@ -23,7 +23,7 @@ public partial class ImageCommandsModule : InteractionModuleBase
             // looping through each image in the GIF and resizing them.
             using MagickImageCollection emoteImgCol = new(emoteImgStream);
             emoteImgCol.Coalesce();
-            foreach (IMagickImage image in emoteImgCol)
+            foreach (var image in emoteImgCol)
             {
                 image.Resize(256, 256);
             }
