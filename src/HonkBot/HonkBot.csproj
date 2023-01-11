@@ -17,7 +17,7 @@
     <Authors>Timothy Small</Authors>
     <Company>Smalls.Online</Company>
     <RepositoryUrl>https://github.com/Smalls1652/HonkBot</RepositoryUrl>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionPrefix>0.2.1</VersionPrefix>
     <Description>
       A very stupid Discord bot I'm using in a private Discord server.
     </Description>
