@@ -157,7 +157,7 @@ public class DiscordService : IDiscordService
     private async Task AddServerConfigsOnStartupAsync()
     {
         IReadOnlyCollection<SocketGuild> currentlyJoinedGuilds = _discordClient.Guilds;
-        foreach (SocketGuild guild in currentlyJoinedGuilds)
+        foreach (var guild in currentlyJoinedGuilds)
         {
             try
             {
@@ -207,7 +207,7 @@ public class DiscordService : IDiscordService
     private async Task HandleRandomFartBombAsync(SocketMessage message)
     {
         string? guildId = null;
-        foreach (SocketGuild guild in _discordClient.Guilds)
+        foreach (var guild in _discordClient.Guilds)
         {
             if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
@@ -268,7 +268,7 @@ public class DiscordService : IDiscordService
     private async Task HandleRandomReactionAsync(SocketMessage message)
     {
         string? guildId = null;
-        foreach (SocketGuild guild in _discordClient.Guilds)
+        foreach (var guild in _discordClient.Guilds)
         {
             if (guild.Channels.Contains(message.Channel as SocketGuildChannel))
             {
@@ -341,7 +341,7 @@ public class DiscordService : IDiscordService
 
     private async Task HandleGuildUpdate(SocketGuild guild1, SocketGuild guild2)
     {
-        foreach (GuildEmote emote in guild2.Emotes)
+        foreach (var emote in guild2.Emotes)
         {
             if (!guild1.Emotes.Contains(emote))
             {
