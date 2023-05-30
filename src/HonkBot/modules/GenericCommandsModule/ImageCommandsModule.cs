@@ -8,6 +8,7 @@ namespace HonkBot.Modules;
 /// <summary>
 /// A slash command module for having HonkBot manipulate images.
 /// </summary>
+[EnabledInDm(true)]
 public partial class ImageCommandsModule : InteractionModuleBase
 {
     /// <summary>

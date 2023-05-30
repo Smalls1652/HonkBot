@@ -12,7 +12,7 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// <param name="message"></param>
     /// <returns></returns>
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    [EnabledInDm(isEnabled: false)]
+    [EnabledInDm(false)]
     [MessageCommand(name: "Drop fart bomb")]
     public async Task HandleHonkFartAsync(IMessage message)
     {
