@@ -9,6 +9,7 @@ namespace HonkBot.Modules;
 /// <summary>
 /// Slash command module for configuring HonkBot.
 /// </summary>
+[EnabledInDm(false)]
 public partial class HonkBotConfigCommandModule : InteractionModuleBase
 {
     /// <summary>

@@ -11,7 +11,7 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// </summary>
     /// <param name="message">A message for HonkBot to angrily send.</param>
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    [EnabledInDm(isEnabled: false)]
+    [EnabledInDm(false)]
     [SlashCommand(name: "honk-angry", description:"honk mad")]
     public async Task HandleHonkAngryResponseCommand(
         [Summary(description: "A message for HonkBot to angrily send.")]

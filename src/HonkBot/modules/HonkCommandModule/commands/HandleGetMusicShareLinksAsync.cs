@@ -12,7 +12,7 @@ public partial class HonkCommandModule : InteractionModuleBase
     /// Gets share links for a song on multiple music streaming services and returns it to the client.
     /// </summary>
     /// <param name="musicShareUrl">A URL from a music streaming service.</param>
-    [EnabledInDm(isEnabled: true)]
+    [EnabledInDm(true)]
     [SlashCommand(name: "sharemusic", description: "Get share links for multiple streaming music services.")]
     private async Task HandleGetMusicShareLinks(
         [Summary(name: "url", description: "A URL of a song/album generated from a music streaming service.")]

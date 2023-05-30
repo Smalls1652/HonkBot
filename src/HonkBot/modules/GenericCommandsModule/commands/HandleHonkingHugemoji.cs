@@ -12,7 +12,6 @@ public partial class ImageCommandsModule : InteractionModuleBase
     /// </summary>
     /// <param name="emote">The emote to make bigger.</param>
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    [EnabledInDm(isEnabled: true)]
     [SlashCommand(name: "hugemoji", description: "Make an emote honking huge.")]
     private async Task HandleHonkingHugemoji(
         [Summary(description: "The emote to make honking huge.")]
