@@ -41,7 +41,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(CorePackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(CorePackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.1.*" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.2.*" />
   </ItemGroup>
 
   <ItemGroup>
